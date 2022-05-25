@@ -23,6 +23,7 @@ begin
 	using GLM
 	using Plots, ColorSchemes, LaTeXStrings
 	using PlutoUI
+	using Downloads
 end
 
 # ╔═╡ b4006b03-d1c3-4868-bf86-fe1c6577fed3
@@ -44,28 +45,6 @@ md"""
 Our data set is composed of 649,439 objects, among which 20,640 are high-${z}$ quasars and 628,799 are non-high-${z}$ quasars.  In the next cell we'll load the data.
 """
 
-# ╔═╡ 09a88e14-f1e8-4299-99ca-d31ffdccd577
-begin
-	data_filename = "training_set.csv"
-	if contains(gethostname(),"aci.ics.psu.edu")
-		data_path = joinpath(homedir(),"Code","Astroinformatics",data_filename)
-	elseif contains(gethostname(),"nuc")
-		data_path = joinpath(homedir(),"Downloads",data_filename)
-	else
-		data_path = mktempdir("/tmp")
-		data_path = joinpath(data_path,data_filename)
-		url = ""
-		Downloads.download(url, output=data_path, progress=true)
-	end	
-end
-
-# ╔═╡ 9e59eece-1853-468b-84f6-3a28f3852f9c
-begin
-	data = CSV.read(data_path,DataFrame) #,limit=40000)
-	data[:,:label] .= 1 .- data[:,:label]  # Make label=1 for high-z quaesars
-	data
-end
-
 # ╔═╡ cd73c9b4-803e-4fde-8df4-c57fe382478e
 md"""
 Take a quick glance at the first few rows of the DataFrame above to make sure that they are loaded correctly.
@@ -76,12 +55,6 @@ The first six columns (labeled ug , gr, ri, iz, zs1, and s1s2) contain six color
 md"""
 First, let's check what fraction of the objects are labeled as high-${z}$ quaesars.
 """
-
-# ╔═╡ 50e27175-3261-4889-a4f6-4d4267b19a19
-begin
-	label_mask = data.label .== 1   # high-z quaesars indicated with a label of 1
-	frac_label_1 = sum(label_mask)/length(data.label)
-end
 
 # ╔═╡ 05c0a3c1-24b3-46d3-ab72-57238327e4bb
 md"""
@@ -388,6 +361,116 @@ function fit_logistic_regression( fm::FormulaTerm, data::DataFrame )
 	glm(fm, data, Binomial(), LogitLink() )
 end
 
+# ╔═╡ ad86f7c4-cce8-446c-bed1-eae4800f1bda
+function make_threshold_list(;num_small=16, num_mid=10, num_large=8) 
+	vcat(10 .^ range(-8,stop=-1, length=num_small), 
+		range(0.1, stop=0.9, length=num_mid+2)[2:end-1], 
+		reverse(1 .- 8 .^ range(-10,stop=-1, length=num_large)) 
+		)
+end
+
+# ╔═╡ c9a2eb7f-5189-4aab-bcb7-6b3e7f50689c
+accuracy(model, data::DataFrame; threshold::Real = 0.5) = sum( classify(model, threshold=threshold) .== data.label ) / length(data.label)
+
+# ╔═╡ a6338962-ef11-479d-8e3c-1975703b1058
+misclassified(model, data::DataFrame; threshold::Real=0.5) = classify(model, threshold=threshold) .!= data.label 
+
+# ╔═╡ 5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
+function calc_classification_diagnostics(model, data; threshold = 0.5)
+	pred = classify(model; threshold=threshold)
+	num_true_positives  = sum(  data.label.==1 .&&   pred)
+	num_true_negatives  = sum(  data.label.==0 .&& .!pred)
+	num_false_negatives = sum(  data.label.==1 .&& .!pred)
+	num_false_positives = sum(  data.label.==0 .&&   pred)
+	
+	num_condition_positives = num_true_positives + num_false_negatives
+	num_condition_negatives = num_true_negatives + num_false_positives
+	num_total = num_condition_positives + num_condition_negatives
+	num_predicted_positives = num_true_positives + num_false_positives
+	num_predicted_negatives = num_true_negatives + num_false_negatives
+	true_positive_rate  = num_true_positives/num_condition_positives
+	true_negative_rate  = num_true_negatives/num_condition_negatives
+	false_positive_rate = num_false_positives/num_condition_negatives
+	false_negative_rate = num_false_negatives/num_condition_positives
+	accuracy = (num_true_positives+num_true_negatives)/num_total
+	false_omission_rate = num_false_negatives / num_predicted_negatives
+	false_discovery_rate = num_false_positives / num_predicted_positives
+	F1_score = 2*num_true_positives/(2*num_true_positives+num_false_positives+num_false_negatives)
+	prevalence = (num_true_positives+num_false_negatives)/num_total
+	return (;threshold, accuracy, false_discovery_rate, false_omission_rate, F1_score,
+		false_positive_rate, false_negative_rate, true_positive_rate, true_negative_rate,
+		num_true_positives, num_true_negatives, num_false_positives, num_false_negatives,   
+		num_condition_positives, num_condition_negatives, num_predicted_positives, num_predicted_negatives, 
+		num_total, prevalence )
+end
+
+# ╔═╡ c429f200-24c0-41b3-8660-a0ebff7cd5a9
+function binary_classification_table(diag; digits::Integer=2)
+	apppr = round(diag.num_true_positives/diag.num_total*100, digits=digits)
+	anppr = round(diag.num_false_positives/diag.num_total*100, digits=digits)
+	anpnr = round(diag.num_true_negatives/diag.num_total*100, digits=digits)
+	appnr = round(diag.num_false_negatives/diag.num_total*100, digits=digits)
+	ncp = diag.num_condition_positives
+	ncf = diag.num_condition_negatives
+	npp = diag.num_predicted_positives
+	npn = diag.num_predicted_negatives
+	nt = diag.num_total
+    md"""
+|                     | Predicted Positive | Predicted Negative| Count | 
+|:--------------------|--------------------|-------------------|-------|
+| **Actual Positive** | $apppr%            | $appnr%           | $ncp  |
+| **Actual Negative** | $anppr%            | $anpnr%           | $ncf  |          
+| **Count**           | $npp               | $npn              | $nt   | """        
+end
+
+# ╔═╡ 0f391345-5b71-45a7-b826-bc98c1feef9c
+md"""
+## Setup
+"""
+
+# ╔═╡ 475c352a-5f0d-40c8-ad74-4a4c81e8d5e1
+function find_or_download_data(data_filename::String, url::String)
+	if contains(gethostname(),"ec2.internal")
+		data_path = joinpath(homedir(),"data")
+		isdir(data_path) || mkdir(data_path)
+	elseif contains(gethostname(),"aci.ics.psu.edu")
+		data_path = joinpath("/gpfs/scratch",ENV["USER"],"Astroinformatics")
+		isdir(data_path) || mkdir(data_path)
+		data_path = joinpath(data_path,"data")
+		isdir(data_path) || mkdir(data_path)
+	else
+		data_path = joinpath(homedir(),"Astroinformatics")
+		isdir(data_path) || mkdir(data_path)
+		data_path = joinpath(data_path,"data")
+		isdir(data_path) || mkdir(data_path)
+	end	
+	data_path = joinpath(data_path,data_filename)
+	if !(filesize(data_path) > 0)
+		Downloads.download(url, data_path)
+	end
+	return data_path		
+end
+
+# ╔═╡ fef9e716-e7f5-48c0-a82e-1a950b8bf893
+begin
+	data_filename = "training_set.csv"
+	url = "https://scholarsphere.psu.edu/resources/edc61b33-550d-471d-8e86-1ff5cc8d8f4d/downloads/19732"
+	data_path = find_or_download_data(data_filename,url)
+end
+
+# ╔═╡ 9e59eece-1853-468b-84f6-3a28f3852f9c
+begin
+	data = CSV.read(data_path,DataFrame) #,limit=40000)
+	data[:,:label] .= 1 .- data[:,:label]  # Make label=1 for high-z quaesars
+	data
+end
+
+# ╔═╡ 50e27175-3261-4889-a4f6-4d4267b19a19
+begin
+	label_mask = data.label .== 1   # high-z quaesars indicated with a label of 1
+	frac_label_1 = sum(label_mask)/length(data.label)
+end
+
 # ╔═╡ 177df112-4b58-488e-868e-19fea591e3cb
 lrm_all = fit_logistic_regression(fm_all, data)
 
@@ -433,35 +516,6 @@ deviance(lrm_2d)
 # ╔═╡ b4dae5ce-16e2-4aa8-8979-6b81345eadf3
 (;ΔAIC = aic(lrm_all) - aic(lrm_2d), ΔBIC = bic(lrm_all) - bic(lrm_2d) )
 
-# ╔═╡ 2c50f0a5-bebf-438c-a80c-8df00ccba601
-lrm_null =  fit_logistic_regression( @formula(label ~ 1 ) , data)
-
-# ╔═╡ 6cdeeb3f-8276-4e5e-9870-cfbca1676673
-md"""
-Deviance (6 colors): $(round(deviance(lrm_all),digits=1))
-
-Deviance (0 colors): $(round(deviance(lrm_null),digits=1))
-"""
-
-# ╔═╡ 6438f9db-5d36-45ee-bb73-9405d1029a6b
-t_all_vs_null = deviance(lrm_all) - deviance(lrm_null)
-
-# ╔═╡ 45e6135e-a6b6-40a5-b10a-f483f09893c0
-calc_log_pvalue_two_logistic_regression_models( lrm_all, lrm_null )
-
-# ╔═╡ d9a809b2-de1b-4346-9c66-af4681b6e974
-calc_log_pvalue_two_logistic_regression_models( lrm_2d, lrm_null )
-
-# ╔═╡ 32c9945d-a30e-4a95-9065-e867c59ebf06
-begin
-	candidate_terms = fm_all.rhs
-	fm_5d = Term(:label) ~ term(1) + sum(setdiff(candidate_terms,[term(lrm_excl_1var)])) 
-	lrm_5d = fit_logistic_regression(fm_5d, data)
-end
-
-# ╔═╡ 4f2df587-aba9-42e3-b4d0-bf6ef218c0ae
-ΔAIC_6_5 = aic(lrm_all)-aic(lrm_5d)
-
 # ╔═╡ 1a6460f9-d7df-42dd-95ca-527233bf2f67
 function plot_logistic_contours_scatter(model, data, x_col::Symbol, y_col::Symbol; 	num_pts_plt = 4000, grid_size = 50)
 	@assert( string(x_col) ∈ names(data) )
@@ -493,16 +547,24 @@ end
 # ╔═╡ c7168e82-863b-4004-8527-9b033bd0c5d0
 plot_logistic_contours_scatter(lrm_2d, data, lrm_2d_vars[1], lrm_2d_vars[2])
 
-# ╔═╡ ad86f7c4-cce8-446c-bed1-eae4800f1bda
-function make_threshold_list(;num_small=16, num_mid=10, num_large=8) 
-	vcat(10 .^ range(-8,stop=-1, length=num_small), 
-		range(0.1, stop=0.9, length=num_mid+2)[2:end-1], 
-		reverse(1 .- 8 .^ range(-10,stop=-1, length=num_large)) 
-		)
-end
+# ╔═╡ 2c50f0a5-bebf-438c-a80c-8df00ccba601
+lrm_null =  fit_logistic_regression( @formula(label ~ 1 ) , data)
 
-# ╔═╡ c9a2eb7f-5189-4aab-bcb7-6b3e7f50689c
-accuracy(model, data::DataFrame; threshold::Real = 0.5) = sum( classify(model, threshold=threshold) .== data.label ) / length(data.label)
+# ╔═╡ 6cdeeb3f-8276-4e5e-9870-cfbca1676673
+md"""
+Deviance (6 colors): $(round(deviance(lrm_all),digits=1))
+
+Deviance (0 colors): $(round(deviance(lrm_null),digits=1))
+"""
+
+# ╔═╡ 6438f9db-5d36-45ee-bb73-9405d1029a6b
+t_all_vs_null = deviance(lrm_all) - deviance(lrm_null)
+
+# ╔═╡ 45e6135e-a6b6-40a5-b10a-f483f09893c0
+calc_log_pvalue_two_logistic_regression_models( lrm_all, lrm_null )
+
+# ╔═╡ d9a809b2-de1b-4346-9c66-af4681b6e974
+calc_log_pvalue_two_logistic_regression_models( lrm_2d, lrm_null )
 
 # ╔═╡ 93015a3f-55ed-4ace-8b01-c1830e104c89
 # accuracy (and other helper functions) are defined at the bottom of the notebook
@@ -511,36 +573,23 @@ accuracy(lrm_all, data)
 # ╔═╡ 10155825-92d6-4e1f-b388-edee647e0f63
 accuracy(lrm_2d, data)   
 
-# ╔═╡ a6338962-ef11-479d-8e3c-1975703b1058
-misclassified(model, data::DataFrame; threshold::Real=0.5) = classify(model, threshold=threshold) .!= data.label 
+# ╔═╡ fc691365-0edc-41da-8f60-49eb92528479
+begin
+	diag_all = calc_classification_diagnostics(lrm_all, data)
+	binary_classification_table(diag_all)
+end
 
-# ╔═╡ 5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
-function calc_classification_diagnostics(model, data; threshold = 0.5)
-	pred = classify(model; threshold=threshold)
-	num_true_positives  = sum(  data.label.==1 .&&   pred)
-	num_true_negatives  = sum(  data.label.==0 .&& .!pred)
-	num_false_negatives = sum(  data.label.==1 .&& .!pred)
-	num_false_positives = sum(  data.label.==0 .&&   pred)
-	
-	num_condition_positives = num_true_positives + num_false_negatives
-	num_condition_negatives = num_true_negatives + num_false_positives
-	num_total = num_condition_positives + num_condition_negatives
-	num_predicted_positives = num_true_positives + num_false_positives
-	num_predicted_negatives = num_true_negatives + num_false_negatives
-	true_positive_rate  = num_true_positives/num_condition_positives
-	true_negative_rate  = num_true_negatives/num_condition_negatives
-	false_positive_rate = num_false_positives/num_condition_negatives
-	false_negative_rate = num_false_negatives/num_condition_positives
-	accuracy = (num_true_positives+num_true_negatives)/num_total
-	false_omission_rate = num_false_negatives / num_predicted_negatives
-	false_discovery_rate = num_false_positives / num_predicted_positives
-	F1_score = 2*num_true_positives/(2*num_true_positives+num_false_positives+num_false_negatives)
-	prevalence = (num_true_positives+num_false_negatives)/num_total
-	return (;threshold, accuracy, false_discovery_rate, false_omission_rate, F1_score,
-		false_positive_rate, false_negative_rate, true_positive_rate, true_negative_rate,
-		num_true_positives, num_true_negatives, num_false_positives, num_false_negatives,   
-		num_condition_positives, num_condition_negatives, num_predicted_positives, num_predicted_negatives, 
-		num_total, prevalence )
+# ╔═╡ 2f734a61-e940-40e5-84c3-4bc0d3b4687f
+begin
+	Δk = length(lrm_all.mf.f.rhs.terms) - length(lrm_2d.mf.f.rhs.terms) 
+	Δklogn = Δk*log(diag_all.num_total)
+	(;Δk , Δklogn)
+end
+
+# ╔═╡ d3105131-57af-4f55-8f68-76d49086aac0
+begin
+	diag_2 = calc_classification_diagnostics(lrm_2d, data)
+	binary_classification_table(diag_2)
 end
 
 # ╔═╡ dc104c01-85fa-4c3c-857f-7eb28c01931f
@@ -605,48 +654,15 @@ let
 	ylims!(plt5,0,1)
 end
 
-# ╔═╡ c429f200-24c0-41b3-8660-a0ebff7cd5a9
-function binary_classification_table(diag; digits::Integer=2)
-	apppr = round(diag.num_true_positives/diag.num_total*100, digits=digits)
-	anppr = round(diag.num_false_positives/diag.num_total*100, digits=digits)
-	anpnr = round(diag.num_true_negatives/diag.num_total*100, digits=digits)
-	appnr = round(diag.num_false_negatives/diag.num_total*100, digits=digits)
-	ncp = diag.num_condition_positives
-	ncf = diag.num_condition_negatives
-	npp = diag.num_predicted_positives
-	npn = diag.num_predicted_negatives
-	nt = diag.num_total
-    md"""
-|                     | Predicted Positive | Predicted Negative| Count | 
-|:--------------------|--------------------|-------------------|-------|
-| **Actual Positive** | $apppr%            | $appnr%           | $ncp  |
-| **Actual Negative** | $anppr%            | $anpnr%           | $ncf  |          
-| **Count**           | $npp               | $npn              | $nt   | """        
-end
-
-# ╔═╡ fc691365-0edc-41da-8f60-49eb92528479
+# ╔═╡ 32c9945d-a30e-4a95-9065-e867c59ebf06
 begin
-	diag_all = calc_classification_diagnostics(lrm_all, data)
-	binary_classification_table(diag_all)
+	candidate_terms = fm_all.rhs
+	fm_5d = Term(:label) ~ term(1) + sum(setdiff(candidate_terms,[term(lrm_excl_1var)])) 
+	lrm_5d = fit_logistic_regression(fm_5d, data)
 end
 
-# ╔═╡ 2f734a61-e940-40e5-84c3-4bc0d3b4687f
-begin
-	Δk = length(lrm_all.mf.f.rhs.terms) - length(lrm_2d.mf.f.rhs.terms) 
-	Δklogn = Δk*log(diag_all.num_total)
-	(;Δk , Δklogn)
-end
-
-# ╔═╡ d3105131-57af-4f55-8f68-76d49086aac0
-begin
-	diag_2 = calc_classification_diagnostics(lrm_2d, data)
-	binary_classification_table(diag_2)
-end
-
-# ╔═╡ 0f391345-5b71-45a7-b826-bc98c1feef9c
-md"""
-## Setup
-"""
+# ╔═╡ 4f2df587-aba9-42e3-b4d0-bf6ef218c0ae
+ΔAIC_6_5 = aic(lrm_all)-aic(lrm_5d)
 
 # ╔═╡ d84e3b2b-2635-4175-a963-2ab49e17d05a
 md"# Extras (potentialy delete)"
@@ -758,6 +774,7 @@ CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 EvalMetrics = "251d5f9e-10c1-4699-ba24-e0ad168fa3e4"
 GLM = "38e38edf-8417-5370-95a0-9cbb8c7f171a"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
@@ -1855,7 +1872,7 @@ version = "0.9.1+5"
 # ╟─b4006b03-d1c3-4868-bf86-fe1c6577fed3
 # ╟─232af762-1bff-4b01-8d5c-911e660a3c48
 # ╟─f47998cc-0b90-436f-8aa7-02d8e6376652
-# ╠═09a88e14-f1e8-4299-99ca-d31ffdccd577
+# ╠═fef9e716-e7f5-48c0-a82e-1a950b8bf893
 # ╠═9e59eece-1853-468b-84f6-3a28f3852f9c
 # ╟─cd73c9b4-803e-4fde-8df4-c57fe382478e
 # ╟─c5c9e630-f854-4076-8856-be63defd670a
@@ -1940,6 +1957,7 @@ version = "0.9.1+5"
 # ╠═c429f200-24c0-41b3-8660-a0ebff7cd5a9
 # ╟─0f391345-5b71-45a7-b826-bc98c1feef9c
 # ╠═6cdc71be-cbc7-11ec-3c09-afe22a13530f
+# ╠═475c352a-5f0d-40c8-ad74-4a4c81e8d5e1
 # ╟─d84e3b2b-2635-4175-a963-2ab49e17d05a
 # ╠═4393033f-54c5-42e1-b4cf-f16da0d6729d
 # ╠═fc78e16c-c2ad-4a24-afaf-500c0c25e3d8
