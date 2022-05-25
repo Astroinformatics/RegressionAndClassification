@@ -29,9 +29,9 @@ end
 md"""
 We begin our exploration of the world of machine learning with the classic topic of linear regression.  While you have likely seen linear regression previously, linear regression is such a foundational tool, that it's worth a quick refresher.  
 
-Often in astrophysics, research we'd like to find a relationship between variables. Ocassionaly, we look for relationships that we anticipate are likely to be linear.  For instance, in the absence of influence from external forces, we would expect a planet's orbit to be periodic.  In this case linear regrssion would be the starting point for fitting a model to observed transit times to find the orbital period.  
+Often in astrophysics, research we'd like to find a relationship between variables. Occasionally, we look for relationships that we anticipate are likely to be linear.  For instance, in the absence of influence from external forces, we would expect a planet's orbit to be periodic.  In this case linear regrssion would be the starting point for fitting a model to observed transit times to find the orbital period.  
 """
-#Extraneous influence will cause the transit times to vary, allowing observers to infer properties of the other body(s), even if it does not transit. 
+#Extraneous influence will cause the transit times to vary, allowing observers to infer properties of the other body(s), even if it does not transit.
 
 # ╔═╡ 49d355c8-0894-4a59-b16a-05e79f90d493
 md"""
@@ -45,11 +45,11 @@ and $\varepsilon_i$ is the error associated with each observation $i$.
 
 Alternatively, in matrix-vector equation, we can express the same model as
 ```math
-	\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\varepsilon}, 
-	\quad 
+	\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\varepsilon},
+	\quad
 	\{\,
-		\mathbf{X} \in \mathbb{R}^{N \times K};\, 
-		\beta \in \mathbb{R}^K;\, 
+		\mathbf{X} \in \mathbb{R}^{N \times K};\,
+		\beta \in \mathbb{R}^K;\,
 		\mathbf{y},\,\mathbf{\varepsilon} \in \mathbb{R}^N
 	\,\},
 ```
@@ -82,14 +82,14 @@ which when fullly expanded gives us a system of ``N`` equations with ``K`` varia
 		\varepsilon_N
 	\end{bmatrix},
 ```
-Here ``X_{ij}`` is known as the _feature matrix_  or _design matrix_. 
+Here ``X_{ij}`` is known as the _feature matrix_  or _design matrix_.
 """
 
 # ╔═╡ 3ce217e6-d87b-4767-9abb-3cd9ad365444
 Foldable(
 	"
 	Let us pause for a moment to ponder the implications of a system being overdetermined.  What do the columns in the feature matrix represent?
-	  
+
 	(Click the arrow once you're ready to read a possible response.)",
 
 	md"""As a concrete example, consider a ``3 \times 2`` matrix ``M``. The two columns of ``M`` are vectors from ``\mathbb{R}^3`` that span a 2-dimensional plane embedded in 3-dimensional space. Any vector that lies on this plane can be decomposed into a linear combination of the two column vectors of ``M``. This 2D plane is called the _column space_ of ``M``. This picture works for higher dimensions too!
@@ -117,27 +117,27 @@ Here, we'll briefly review how ``\mathbf{\hat{\beta}}`` is computed in the case 
 	\textrm{minimize}\; ||\,\mathbf{y} - \mathbf{X}\mathbf{\hat{\beta}} \,||^2.
 ```
 
-We gain some intuition by approaching ordinary least squaresin from two perspectives: calculus and linear algebra.  In both cases, aim for refreshing your understanding of the approach and becoming familiar with the notation, rather than worrying about the mathematical details of each step of the derivation.
+We gain some intuition by approaching ordinary least squares from two perspectives: calculus and linear algebra.  In both cases, aim for refreshing your understanding of the approach and becoming familiar with the notation, rather than worrying about the mathematical details of each step of the derivation.
 
 ### Calculus
 First, we expand the squared-norm of the residual vector:
 ```math
-	||\,\mathbf{y} - \mathbf{X}\mathbf{\hat{\beta}} \,||^2 
-	= 
+	||\,\mathbf{y} - \mathbf{X}\mathbf{\hat{\beta}} \,||^2
+	=
 	\left(\mathbf{y} - \mathbf{X}\mathbf{\hat{\beta}}\right)^\intercal
 	\left(\mathbf{y} - \mathbf{X}\mathbf{\hat{\beta}}\right)
 	=
-	\mathbf{y}^\intercal \mathbf{y} 
+	\mathbf{y}^\intercal \mathbf{y}
 	- 2\mathbf{\hat{\beta}}^\intercal\mathbf{X}^\intercal \mathbf{y}
 	+ \mathbf{\hat{\beta}}^\intercal\mathbf{X}^\intercal \mathbf{X}\mathbf{\hat{\beta}} .
 ```
 (Do you recognize the step we skipped over?)
 Since we would like to find a ``\mathbf{\hat{\beta}}`` that minimizes the expression, we take the [matrix-derivative](https://www.gatsby.ucl.ac.uk/teaching/courses/sntn/sntn-2017/resources/Matrix_derivatives_cribsheet.pdf) with respect to ``\mathbf{\hat{\beta}}`` and set the expression to 0, i.e.
 ```math
-	\dfrac{d}{d\mathbf{\hat{\beta}}}\left(\mathbf{y}^\intercal \mathbf{y} 
+	\dfrac{d}{d\mathbf{\hat{\beta}}}\left(\mathbf{y}^\intercal \mathbf{y}
 	- 2\mathbf{\hat{\beta}}^\intercal\mathbf{X}^\intercal \mathbf{y}
-	+ \mathbf{\hat{\beta}}^\intercal\mathbf{X}^\intercal \mathbf{X}\mathbf{\hat{\beta}}\right) 
-	= 
+	+ \mathbf{\hat{\beta}}^\intercal\mathbf{X}^\intercal \mathbf{X}\mathbf{\hat{\beta}}\right)
+	=
 	-2\mathbf{X}^\intercal \mathbf{y}
 	+2\mathbf{X}^\intercal \mathbf{X}\mathbf{\hat{\beta}}
 	=
@@ -163,11 +163,11 @@ Another approach which some find to more intuitive is to thinking of the problem
 
 # ╔═╡ a61518a4-6e42-4d8a-af8d-4d2a9605eef1
 md"""
-Most of the time, the solution does not exist since ``\mathbf{y}`` is _not_ in the column space of ``\mathbf{X}``. We can, however, find a vector ``\mathbf{\hat{\beta}}`` that best estimates it. 
+Most of the time, the solution does not exist since ``\mathbf{y}`` is _not_ in the column space of ``\mathbf{X}``. We can, however, find a vector ``\mathbf{\hat{\beta}}`` that best estimates it.
 
-For intuition, we can project ``\mathbf{y}`` onto the nearest vector that does lie in the column space of ``\mathbf{X}``, and solve that problem instead.  The linear system can now be solved but the solution is only the best approximation to the original problem. 
+For intuition, we can project ``\mathbf{y}`` onto the nearest vector that does lie in the column space of ``\mathbf{X}``, and solve that problem instead.  The linear system can now be solved but the solution is only the best approximation to the original problem.
 
-The following animation may help to visualize this intepretation idea:"""
+The following animation may help to visualize this interpretation idea:"""
 
 # ╔═╡ ee83d05b-4a46-4f62-a0eb-1a70b5f4be8a
 html"""
@@ -197,7 +197,7 @@ to which we get the same solution
 # ╔═╡ 420a9b91-8672-4c73-8a34-9e3f3a9b9cb5
 md"""
 ## Example
-Let's try this out in code. For demonstration purposes, we'll geneate a simple dataset of 100 points that are generated by a linear model with Normally distributed measurement noise.
+Let's try this out in code. For demonstration purposes, we'll generate a simple dataset of 100 points that are generated by a linear model with Normally distributed measurement noise.
 """
 
 # ╔═╡ 82e7ca08-4149-4b0e-97bf-77f421d84acd
@@ -211,7 +211,7 @@ begin
 
 	# The true unobserved relationship, β
 	βₜᵣᵤₑ = [-50; 5]
-	
+
 	# Design matrix
 	X = [ones(N) x]
     # The true unobserved relationship, β
@@ -276,23 +276,23 @@ end
 # ╔═╡ 704d5b25-cd7e-4486-9ec3-8a8030146ba5
 md"""
 # The Machine Learning Perspective
-Now that we're familiar with the linear algebra approach, we turn our attention to the ML appproach. Luckily for us, most of the formulation remains the same, but we will switch notation standards.
+Now that we're familiar with the linear algebra approach, we turn our attention to the ML approach. Luckily for us, most of the formulation remains the same, but we will switch notation standards.
 
 ``\\[2mm]``
 $(Resource("https://imgs.xkcd.com/comics/standards_2x.png"))
 Credit: [XKCD: 927](https://xkcd.com/927/)  This cartoon is licensed under under a [Creative Commons Attribution-NonCommercial 2.5 License](https://creativecommons.org/licenses/by-nc/2.5/).
 ``\\[6mm]``
 
-So far, the notation we've used is one that is common in the land of Statistics. In the world of Machine Learning, the conventions are typically different in that ``\mathbf{\hat{\beta}}`` is written as ``\mathbf{\theta}`` -- a vector of parameters that we tune to *train* a model or *learn* a relationship. 
-We will adopt this standard in this section. 
+So far, the notation we've used is one that is common in the land of Statistics. In the world of Machine Learning, the conventions are typically different in that ``\mathbf{\hat{\beta}}`` is written as ``\mathbf{\theta}`` -- a vector of parameters that we tune to *train* a model or *learn* a relationship.
+We will adopt this standard in this section.
 """
 
 # ╔═╡ ae885e79-d922-4017-b150-554bd7762c42
 md"""
 ## Objective Function (or Loss Function)
-To start tuning the parameters, we must first define an **objective function** or **loss funciton**, ``J``, that we would like to minimize.  Motivated by the log likelihood for OLS, we will consider the Mean-Squared Error (MSE) loss function:
+To start tuning the parameters, we must first define an **objective function** or **loss function**, ``J``, that we would like to minimize.  Motivated by the log likelihood for OLS, we will consider the Mean-Squared Error (MSE) loss function:
 ```math
-	J(x_i;\, \theta_0,\, \theta_1) = \dfrac{1}{N} \sum_{i = 0}^N (y_i' - y_i)^2 
+	J(x_i;\, \theta_0,\, \theta_1) = \dfrac{1}{N} \sum_{i = 0}^N (y_i' - y_i)^2
 ```
 
 You're encouraged to implement this loss function in the next cell.  There are hint boxes to help.  Or if you'd rather continue on without implementing the loss function yourself, there's a check box below you can check (which will cause the rest of the lab to function properly with a reference implementation).
@@ -358,7 +358,7 @@ We can then use the computed partial derivatives to walk down the gradient by co
   	\theta_{1,\, i + 1} &= \theta_{1,\, i} - \eta \dfrac{\partial J}{\partial \theta_1}
 \end{align*}
 ```
-where ``\eta`` is the learning rate. 
+where ``\eta`` is the learning rate.
 """
 
 # ╔═╡ 1e1f47cc-6b61-42f8-aebe-8a78779bd9e3
@@ -408,7 +408,7 @@ md"""
 
 # ╔═╡ dc29a574-cc88-4ed9-b0a7-f29d2107bc3d
 md"""
-**Question:** Depending on your intial guess, there may have been a plateua where the model barely improved for many iterations.  How could you recognize that continuing to run the gradient descent algorithm was likely to result in finding a significantly better model?  Why might that not be practical when working with a real data set ?
+**Question:** Depending on your initial guess, there may have been a plateau where the model barely improved for many iterations.  How could you recognize that continuing to run the gradient descent algorithm was likely to result in finding a significantly better model?  Why might that not be practical when working with a real data set ?
 """
 
 # ╔═╡ a941ed2c-3a3d-4b87-8f43-3276b7fd6ef7
@@ -430,7 +430,7 @@ How does the final estimate from gradient descent compare to the OLS estimator? 
 
 # ╔═╡ 501a28d0-3478-4564-a9f8-22deaec158c1
 md"""
-Upon closer inspection, we see that the estimates of $\hat{\beta}$ from OLS differ slightly from the final state of the gradient descent algorithm.  Based on comnparing the loss function, we can see that gradient descent's estimate of the intercept and slope is slightly worse.
+Upon closer inspection, we see that the estimates of $\hat{\beta}$ from OLS differ slightly from the final state of the gradient descent algorithm.  Based on comparing the loss function, we can see that gradient descent's estimate of the intercept and slope is slightly worse.
 """
 
 # ╔═╡ 676168f5-a61a-4b4d-a8c2-56b0b5cfc3d5
@@ -457,7 +457,7 @@ Given that these assumptions are satisfied, OLS [guarantees](https://en.wikipedi
 ```
 We will still find an estimate if we used OLS when these assumptions are violated, but it may not be the best!
 
-In the next seciton, we'll explore what happens when the assumptions are violated.
+In the next section, we'll explore what happens when the assumptions are violated.
 	"""
 
 # ╔═╡ c24ae519-cdd6-4544-943e-ee6018da0810
@@ -466,11 +466,11 @@ md"""
 ## Measurement Uncertainties & Weighted Linear Regression
 Often in astronomy & astrophysics, we have access to the measurement uncertainties (or at least estimate of the measurement uncertainties).  
 Usually, these are not equal, violating one of the assumptions of ordinary least squares.  
-If the measurement errors are all independent and uncorellated, then we can use [weighted linear regression](https://en.wikipedia.org/wiki/Weighted_least_squares).  
+If the measurement errors are all independent and uncorrelated, then we can use [weighted linear regression](https://en.wikipedia.org/wiki/Weighted_least_squares).  
 
-If all of the assumptions we made on OLS is valid, then we would expect the errors, $\mathbf{\epsilon}$, to be drawn from a multivariate normal distribution with zero mean, and a  [covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix) 
+If all of the assumptions we made on OLS is valid, then we would expect the errors, $\mathbf{\epsilon}$, to be drawn from a multivariate normal distribution with zero mean, and a  [covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix)
 ```math
-	\mathbf{\Sigma} = \sigma^2 \mathbf{I} 
+	\mathbf{\Sigma} = \sigma^2 \mathbf{I}
 	=
 	\sigma^2
 	\begin{bmatrix}
@@ -489,7 +489,7 @@ However, when the errors have non-constant variance, the diagonal entries in the
 		0 		& 0 		& \ldots & \sigma^2_N\\
 	\end{bmatrix}
 	\quad \rightarrow \quad
-	\mathbf{W} = \mathbf{\Sigma}^{-1} = 
+	\mathbf{W} = \mathbf{\Sigma}^{-1} =
 	\begin{bmatrix}
 		\sigma^{-2}_1 		& 0 		& \ldots & 0\\
 		0 		& \sigma^{-2}_2 		& \ldots & 0\\
@@ -499,9 +499,9 @@ However, when the errors have non-constant variance, the diagonal entries in the
 ```
 This means that the objective function is changed to reflect the weight of each observation -- smaller variances are have more importance than larger variances i.e.
 ```math
-	J_\textrm{WLS}(x_i;\, \theta_0,\, \theta_1) = \dfrac{1}{N} \sum_{i = 0}^N \dfrac{1}{\sigma_i^2}(y_i' - y_i)^2 
+	J_\textrm{WLS}(x_i;\, \theta_0,\, \theta_1) = \dfrac{1}{N} \sum_{i = 0}^N \dfrac{1}{\sigma_i^2}(y_i' - y_i)^2
 ```
-Thankfully, it's a simple upgrqade and we can still perform weighted linear regression without incuring a significant performance penalty.  
+Thankfully, it's a simple upgrade and we can still perform weighted linear regression without incurring a significant performance penalty.  
 """
 
 # ╔═╡ 75311f29-da64-44fe-9623-5e92da348f13
@@ -519,7 +519,7 @@ In this case, we can make use of [generalized linear regression](https://en.wiki
 ```
 
 For small problem sizes (matrix with less than $\sim10^3$ rows or columns), one can compute can still compute $\mathbf{\hat{\beta}}$ efficiently via linear algebra.  
-As the size of the system increases, the memory and computational costs rapidly increase. Sometimes there special properties of the covariance matrix (e.g., banded, block diagonal) that allow it to be factorized efficiently.  Otherwise, you may be driven to taking the machine learngin approach of estimating $\mathbf{\hat{\beta}}$ via an iterative algorithm.
+As the size of the system increases, the memory and computational costs rapidly increase. Sometimes there special properties of the covariance matrix (e.g., banded, block diagonal) that allow it to be factorized efficiently.  Otherwise, you may be driven to taking the machine learning approach of estimating $\mathbf{\hat{\beta}}$ via an iterative algorithm.
 
 """
 
@@ -535,15 +535,15 @@ Another example of applying general linear regression to solve a non-linear prob
 v(t) = K \cos\left(\frac{2\pi (t-t₀)}{P}\right) + C,
 ```
 for the radial velocity ($v$) of a star or planet at time $t$ with amplitude $K$ and orbital period $P$ appears to be non-linear.  
-But making use of trigometric relations, we can rewrite this as
+But making use of trigonometric relations, we can rewrite this as
 ```math
 v(t) = A \cos\left(\frac{2\pi t}{P}\right) + B \cos\left(\frac{2\pi t}{P}\right) + C,
 ```
-where the coefficients $A$ and $B$ can be related to $K$ and $t₀$.  If we knew the time of each observation and orbital period, $P$, then the model is linear in the parameters $A$, $B$ and $C$.  The trigometric functions become the regressors and two columns of the design matrix.  In practices, we often don't know $P$ *a priori*.  But linear regression is so efficient, it's often computationally efficient to perform a brute force search over a grid of $P$ values, computing the best fit values of $A$ and $B$ for each value of $P$.  
+where the coefficients $A$ and $B$ can be related to $K$ and $t₀$.  If we knew the time of each observation and orbital period, $P$, then the model is linear in the parameters $A$, $B$ and $C$.  The trigonometric functions become the regressors and two columns of the design matrix.  In practices, we often don't know $P$ *a priori*.  But linear regression is so efficient, it's often computationally efficient to perform a brute force search over a grid of $P$ values, computing the best fit values of $A$ and $B$ for each value of $P$.  
 This is the basis for the Lomb-Scargle periodogram (and many other periodograms) that is widely used for searching for periodicities in unevenly sampled time-series.
 
 
-In both of the examples above the careful choice of regressors (or *features* in the machine learning parlance), the problem can be reframed as a problem of linear regrssion (or many linear regression problems).  In addition to accelerating the fitting process, rewriting a linear models in terms of linear regression can be very beneficial since the resulting models have a single global mode, are readily interpretable and are computationallly efficient.  
+In both of the examples above the careful choice of regressors (or *features* in the machine learning parlance), the problem can be reframed as a problem of linear regression (or many linear regression problems).  In addition to accelerating the fitting process, rewriting a linear models in terms of linear regression can be very beneficial since the resulting models have a single global mode, are readily interpretable and are computationally efficient.  
 In the next lab, we'll consider logistic regression, one example of a family of *generalized linear models* which makes use of a link function to help with classification problems.
 	"""
 
@@ -581,7 +581,7 @@ function gradient_descent(X, y, θ; η=1e-3, num_iteration=15_000)
 		y′ = f(X, θ)                            # predictions  
 		J_history[iter] = loss_function(y, y′)
 		θ_history[iter, :] = θ[:]
-		
+
 	end
 
 	return (;θ, J_history, θ_history)
@@ -700,7 +700,7 @@ aside(
 aside(
     md"""
     !!! tip "Tip:  Numerical Linear Algebra"
-    	Sovling linear systems numerically introduces some additional challenges, particularly for large systems of equations.  Computing the inverse of a matrix is computationally costly and can be numerically unstable. 
+    	Sovling linear systems numerically introduces some additional challenges, particularly for large systems of equations.  Computing the inverse of a matrix is computationally costly and can be numerically unstable.
         Therefore, one tries to avoid computing `inv(A)` whenever possible.
         Instead, one solves the matrix-vector equation using one of several algorithms that make use of matrix factorization (QR, LU, etc.).  
         In the case of ordinary least squares, one would solve the system:
@@ -732,7 +732,7 @@ aside(
 # ╔═╡ 817ef46e-4706-4743-854c-9bdb64df5243
 aside(md"""
 !!! tip "Pro Tip:  Autodifferentiation"
-    In this example, we worked out the derivatives analytically.  For more complex problems, computing the derivatives analytically rapidly becomes tedious and error prone.  Fortunately, modern machine learning toolkits include packages that can calculate derivatives analytically.  Often there is a significant computational cost to working out the derivatives once, but subsequent calss can be only a little more expensive than calculating the loss funciton once.  There are multiple algorithms for automatic differentation (or autodifferentiation).  Many packages provide multiple implementations, so you can choose the most efficient algorithm for your problem.  
+    In this example, we worked out the derivatives analytically.  For more complex problems, computing the derivatives analytically rapidly becomes tedious and error prone.  Fortunately, modern machine learning toolkits include packages that can calculate derivatives analytically.  Often there is a significant computational cost to working out the derivatives once, but subsequent calls can be only a little more expensive than calculating the loss function once.  There are multiple algorithms for automatic differentiation (or autodifferentiation).  Many packages provide multiple implementations, so you can choose the most efficient algorithm for your problem.  
 """,
 v_offset=-680)
 
@@ -774,7 +774,7 @@ md"""
 
 # ╔═╡ ddc378dd-537a-4247-a2ea-4a5be1924289
 md"""
-Viewing angles: $nbsp  Azimuth $(@bind camera1 Slider(0:1:90, default=83)) 
+Viewing angles: $nbsp  Azimuth $(@bind camera1 Slider(0:1:90, default=83))
 $nbsp  $nbsp
 Altitude: $(@bind camera2 Slider(0:1:90, default=20))
 """
@@ -787,15 +787,15 @@ let
 	θ₁ = range(-25, stop=25, length=mesh_size)
 
 	J_mesh = zeros(mesh_size, mesh_size)
-	
+
 	for (idx₀, t₀) ∈ enumerate(θ₀), (idx₁, t₁) ∈ enumerate(θ₁),
 		J_mesh[idx₁, idx₀] = loss_function(y, f(X, [t₀, t₁]))   # CHECK: Are the arges to J_Mesh flipped?
 	end
 	plt = plot(xlabel="θ₀", ylabel="θ₁", zlabel="J", zlims=(0,2e5), camera=(camera1, camera2))
 	surface!(plt,θ₀, θ₁, J_mesh, color=:viridis )
-	
-	plot!(plt, 
-		view(θ_gd_history,1:n, 1), 
+
+	plot!(plt,
+		view(θ_gd_history,1:n, 1),
 		view(θ_gd_history,1:n, 2),
 		view(j_gd_history,1:n),
 		linestyle=:dash, color=:white,
