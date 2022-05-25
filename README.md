@@ -1,18 +1,13 @@
-# Day 1: Fundamentals of Machine Learning
+# Regression & Classification Labs
 
-## Astroinformatics Summer School 2022
-
-Organized by [Penn State Center for Astrostatistics](https://sites.psu.edu/astrostatistics/)
-
+### Astroinformatics Summer School 2022
+### Organized by [Penn State Center for Astrostatistics](https://sites.psu.edu/astrostatistics/)
 -----
-## Morning Session
-- Regression & Classification ([github](https://github.com/Astroinformatics/RegressionAndClassification))
------
-## Afternoon Session
-- Data Mining
-   - Intro to Databases & SQL ([slides](https://drive.google.com/file/d/152gijuTv5kvbP3VODNg1Dbzt_0gdElSA/view?usp=sharing))
-   - Getting started with SciServer.org instructions:  ([text](https://docs.google.com/document/d/1j-xunAPcYn1VS91xDyAro2BYiQKJQbff4rrwQTBzRDQ/edit?usp=sharing)) & ([video](https://psu.mediaspace.kaltura.com/media/Getting+started+with+SQL+Lab+using+SciServer/1_sg85a1ed))
-   - [SQL Lab instructions](https://drive.google.com/file/d/1J8lFFAQFSA_90_K53suEOAkoBjcl6NKV/view?usp=sharing)
+
+Suggested Order:
+- gradient_descent.jl (Pluto notebook): Introduction to optimization algorithms, with a focus on gradient descent
+- linear-regression.jl (Pluto notebook):  Introduciton/review of linear regression from a machine learning perspective
+- logistics_regression.jl (Pluto notebook):  Apply Logistic regression to classify High-redshift Quasars
 
 -----
 ## Additional Links
