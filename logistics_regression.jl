@@ -35,7 +35,7 @@ md"""
 
 # ╔═╡ 232af762-1bff-4b01-8d5c-911e660a3c48
 md"""
-In this lesson, we'll apply logistic regression as we attempt to build a clasifier for high-${z}$ quaesars.  
+In this lesson, we'll apply logistic regression as we attempt to build a classifier for high-${z}$ quasars.  
 """
 
 # ╔═╡ f47998cc-0b90-436f-8aa7-02d8e6376652
@@ -48,12 +48,12 @@ Our data set is composed of 649,439 objects, among which 20,640 are high-${z}$ q
 # ╔═╡ cd73c9b4-803e-4fde-8df4-c57fe382478e
 md"""
 Take a quick glance at the first few rows of the DataFrame above to make sure that they are loaded correctly.
-The first six columns (labeled ug , gr, ri, iz, zs1, and s1s2) contain six color features defined as magnitude differences (u-g , g-r, r-i, i-z, z-s1, and s1-s2, where u, g, r, i, z and Sloan band magnitudes and s1 and s2 are magnitudes in two Spitzer bands).  The last column contains binary values indicating whether the object is a high-$z$ quasars or something else.  We've flipped the label collum, so 1 corresponds to a high-$z$ quasar, and 0 indicates anything else. 
+The first six columns (labeled ug , gr, ri, iz, zs1, and s1s2) contain six color features defined as magnitude differences (u-g , g-r, r-i, i-z, z-s1, and s1-s2, where u, g, r, i, z and Sloan band magnitudes and s1 and s2 are magnitudes in two Spitzer bands).  The last column contains binary values indicating whether the object is a high-$z$ quasars or something else.  We've flipped the label column, so 1 corresponds to a high-$z$ quasar, and 0 indicates anything else.
 """
 
 # ╔═╡ c5c9e630-f854-4076-8856-be63defd670a
 md"""
-First, let's check what fraction of the objects are labeled as high-${z}$ quaesars.
+First, let's check what fraction of the objects are labeled as high-${z}$ quasars.
 """
 
 # ╔═╡ 05c0a3c1-24b3-46d3-ab72-57238327e4bb
@@ -71,11 +71,11 @@ The logistic regression model assumes that each binary response variable $Y_i$ i
 $Y_i\stackrel{\textrm{ind.}}{\sim} \textrm{Bernoulli}(\theta_i)$
 
 
-The mean of the response variable,  $\theta_i~(=E(Y_i))$, is connected to a linear function of regression coefficient via a logit  function. 
+The mean of the response variable,  $\theta_i~(=E(Y_i))$, is connected to a linear function of regression coefficient via a logit  function.
 
 $\textrm{logit}(\theta)=\log\left(\frac{\theta_i}{1-\theta_i}\right)=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\cdots+\beta_6x_{i6}+\epsilon_i=x_i^{\top}\beta,$
 
-where $x_{ij}$ is the $j$-th color feature of the $i$-th object. 
+where $x_{ij}$ is the $j$-th color feature of the $i$-th object.
 
 The expression above shows the matrix notation: $x_i=(1, x_{i1}, x_{i2}, \ldots, x_{i6})^{\top}$ and $\beta=(\beta_0, \beta_1, \beta_2, \ldots, \beta_6)^{\top}$. We note that $x_i$'s are basically column vectors (default in mathematics). In this model, $\beta_0, \beta_1, \beta_2, \ldots$ are unknown parameters.
 
@@ -101,7 +101,7 @@ fm_all = @formula(label ~ 1+ ug + gr + ri + iz + zs1 + s1s2 )
 
 # ╔═╡ 192469ed-a067-4fc2-a997-36b68afadb1e
 md"""
-The next cell fits a logistic regression model to the data using that formula and saves the outcome of logistic regression model using all the potential regressors. 
+The next cell fits a logistic regression model to the data using that formula and saves the outcome of logistic regression model using all the potential regressors.
 A table summarizing the maximum likelihood coefficient values for each regressor (along with some related statistics) results is displayed.
 """
 
@@ -119,7 +119,7 @@ We can inspect the histogram of the predicted probabilities for the first severa
 
 # ╔═╡ 674be2fe-dcf9-4c6e-95a8-71897d86ff61
 md"""
-We can also inspect the histogram of the $\theta_i$'s for each of the high-${z}$ quaesars (top) and other objects (bottom).
+We can also inspect the histogram of the $\theta_i$'s for each of the high-${z}$ quasars (top) and other objects (bottom).
 """
 
 # ╔═╡ 9a72f8b3-fd1a-49fd-abbf-18719316f5c6
@@ -131,7 +131,7 @@ Before we do that, let's make a simpler logistic regression model with only two 
 # ╔═╡ 6d702611-0560-4c2a-9a47-90fd7dd19d96
 md"""
 The generalized regression model also returned an estimate for the uncertainty of each $\beta_i$.  This allows one to perform a quick test of how important each regressor is in the model.  In this case, all of the regression coefficients except  $\beta_5$ are significantly different from zero at the significance level $\alpha=0.05$.
-We can see this because their asymptotic $z$-tests (not $t$-tests) based on the asymptotic property of the maximum likelihood estimation show that their $p$-values are very small (much smaller than $\alpha=0.05$). 
+We can see this because their asymptotic $z$-tests (not $t$-tests) based on the asymptotic property of the maximum likelihood estimation show that their $p$-values are very small (much smaller than $\alpha=0.05$).
 """
 
 # ╔═╡ 86fc2a81-49d6-4f71-9573-3d84e3f54f65
@@ -143,13 +143,13 @@ md"""
 #A: zs1, as its $p$-value 0.0743 is much greater than the $p$-values of other regressors.  
 
 md"""
-If one were using the common $p > 0.05$ criterion for statistical significance, then one could consider that this color likely has little effect on the odds of being a high-$z$ quasar when the other colors are held constants in this model.  Note that this is a highly heurisic method and that there are more sophisticated methods for selecting which variable to include in a model (e.g., AIC scores, cross-validation scores, L1-regularization).  But we'll use the $p$-values for now, so as not to get distracted by learning about these other methods.
+If one were using the common $p > 0.05$ criterion for statistical significance, then one could consider that this color likely has little effect on the odds of being a high-$z$ quasar when the other colors are held constants in this model.  Note that this is a highly heuristic method and that there are more sophisticated methods for selecting which variable to include in a model (e.g., AIC scores, cross-validation scores, L1-regularization).  But we'll use the $p$-values for now, so as not to get distracted by learning about these other methods.
 """
 
 # ╔═╡ 98541794-5a2c-4e6c-9829-a06181f9a22f
 md"""
 ## 3.  Visualizing a logistic regression model
-It's much easier to visualize the predictions of a logistic regression model in two dimensions.  Based on our model above, select two regressors with the extreme $z$-scores.  Below, we'll try fitting a new logistic regression model with just those two regressors. 
+It's much easier to visualize the predictions of a logistic regression model in two dimensions.  Based on our model above, select two regressors with the extreme $z$-scores.  Below, we'll try fitting a new logistic regression model with just those two regressors.
 """
 # most extreme: ug and zs1
 
@@ -169,7 +169,7 @@ As before, the distribution of $\theta_i$'s for high-${z}$ quaesars are distinct
 
 # ╔═╡ 669dc84f-b9e3-4b05-9810-da75c7b22b91
 md"""
-**Question 3a:**  Based on the plot above, do you anticipate that the logistic regression model based on the two colors you choose will be a good choice for identifying high-${z}$ quaesars?  Why or why not?
+**Question 3a:**  Based on the plot above, do you anticipate that the logistic regression model based on the two colors you choose will be a good choice for identifying high-${z}$ quasars?  Why or why not?
 
 **Question 3b:**  Try a few other combinations of colors.  Which do you think will be good for separating high-${z}$ quasars and other objects?
 """
@@ -184,7 +184,7 @@ When we fit a linear model to data, we will always get a set of best fit coeffic
 
 For example, is our logistic model using 6 colors as inputs better than or statistically equivalent to our model using only 2 colors?
 
-The default outputs above did not test whether all features are meaningless (i.e., our model is statistically equivalent to $\beta_1=\beta_2=\cdots=\beta_6=0$) or whether *at least one* feature is meaningful (non-zero) for the purpose of predicting the odds of being a high-$z$ quasar. 
+The default outputs above did not test whether all features are meaningless (i.e., our model is statistically equivalent to $\beta_1=\beta_2=\cdots=\beta_6=0$) or whether *at least one* feature is meaningful (non-zero) for the purpose of predicting the odds of being a high-$z$ quasar.
 
 We can perform a tests by making use of the following insights.  
 The **deviance** is a measure of the quality of fit and is defined as
@@ -200,7 +200,7 @@ This test statistic asymptotically follows the $\chi^2_m$ distribution by the as
 
 # ╔═╡ cbc2364d-308d-4ca9-bfca-4bc82637e6ef
 md"""
-The resulting $p$-value for comparing our full model to the null model is defined as 
+The resulting $p$-value for comparing our full model to the null model is defined as
 
 $P(T\ge t\mid H_0)$
 
@@ -225,7 +225,7 @@ Now, we can perform a similar tests comparing your logistic regression model wit
 
 # ╔═╡ deff64f2-eda5-4902-a9de-fa778fd71ab6
 md"""
-**Question 4a:**  Precisely state the conclusion that you can draw from the $p$-value above. 
+**Question 4a:**  Precisely state the conclusion that you can draw from the $p$-value above.
 """
 
 # ╔═╡ 400a98d3-35f2-4761-9a64-222376c794ef
@@ -244,7 +244,7 @@ $\mathrm{BIC} = 2k \ln(n) - 2 \ln(\mathrm{likelihood})$
 
 # ╔═╡ b3f5129e-fc15-4733-b583-603b19c9efac
 md"""
-**Question 4c:**  Based on the calculations above, is the logistic regression model with all 6 regressors a meaningful improvment over the logistic regression model with just 2 regressors?  
+**Question 4c:**  Based on the calculations above, is the logistic regression model with all 6 regressors a meaningful improvement over the logistic regression model with just 2 regressors?  
 """
 
 # ╔═╡ bea8e902-d1d0-4210-87ad-74c36d6bcc02
@@ -269,25 +269,25 @@ md"""
 md"### Contingency tables"
 
 # ╔═╡ 395dd6cc-efcc-46bb-b824-d9029aa29fe7
-md"Instead of looking only at the accuracy averaged over all cases, let us break down each of the possitibilities with a contingency table.  Rows correspond to actual positives (i.e., objects labeled as high-${z}$ quaesars) and for actual negatives (i.e., objects labeled as something else).  Collumns correspond to predicted positives (i.e., objects predicted to be high-${z}$ quaesars) and predicted negatives (i.e., objects predicted to be something else).
+md"Instead of looking only at the accuracy averaged over all cases, let us break down each of the possibilities with a contingency table.  Rows correspond to actual positives (i.e., objects labeled as high-${z}$ quasars) and for actual negatives (i.e., objects labeled as something else).  Columns correspond to predicted positives (i.e., objects predicted to be high-${z}$ quasars) and predicted negatives (i.e., objects predicted to be something else).
 (If you're already familiar with some of the other diagnostics, you can add a cell and inspect the elements of `diag_all` computed below.)
 
 First, we'll inspect the contingency table for the full model."
 
 # ╔═╡ b82d8dc7-7654-426b-ad45-851a65cb9033
 md"""
-**Question 5c:** How does the rate of true negatives (i.e., an object is both an actual negative and a predicte negative) compare to the total accuracey?  Why?
+**Question 5c:** How does the rate of true negatives (i.e., an object is both an actual negative and a predicted negative) compare to the total accuracy?  Why?
 
-**Question 5d:** If you knew an object were not a high-${z}$ quaesar, then would it be wise for you trust the results of the classifer?  Why?
+**Question 5d:** If you knew an object were not a high-${z}$ quasar, then would it be wise for you trust the results of the classifier?  Why?
 
-**Question 5e:** If the classifier predicts an object is a high-${z}$ quaesar, then would it be wise for you to trust the results of the classifer?   Why?
+**Question 5e:** If the classifier predicts an object is a high-${z}$ quasar, then would it be wise for you to trust the results of the classifier?   Why?
 
 """
 
 # ╔═╡ 5c1ad658-2506-4dd8-8ff1-007e60eedb42
 md"""
 We can compare to the contingency table for the model using only 2 regressors.
-While the accuracies of the two models are very similar, we see that there is a more substantial difference in the false discovery rate.
+While the ac curacies of the two models are very similar, we see that there is a more substantial difference in the false discovery rate.
 """
 
 # ╔═╡ d18eadc8-03e7-4571-97aa-df4e0e8975b1
@@ -305,7 +305,7 @@ $(@bind lrm_to_plot Select([:lrm_all=>"6 regressors", :lrm_5d=>"5 regressors", :
 
 # ╔═╡ 8fa5489e-9405-4460-8e75-eff384db6554
 md"""
-We can see that choosing a threshold less than 0.5 can significantly reduce the false negative rate, while causing only a small increase in the false positive rate.  One tool that's often used to evalutate the trade-off when settin a threshold is the [Receiver operating characteristic curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) (often abbreviated ROC curve), shown below.
+We can see that choosing a threshold less than 0.5 can significantly reduce the false negative rate, while causing only a small increase in the false positive rate.  One tool that's often used to evaluate the trade-off when set tin a threshold is the [Receiver operating characteristic curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) (often abbreviated ROC curve), shown below.
 """
 
 # ╔═╡ 2b191451-5c29-4ee1-997d-c885b0928cdd
@@ -340,7 +340,7 @@ Color to exclude from 5-regressor model: $(@bind lrm_excl_1var Select([:ug => "u
 
 # ╔═╡ b654b8b5-fbcc-4119-ae6c-13ccd55398fb
 md"""
-**Question 5i:** Compare the effectiveness of the logistic classifer depending on the number of regressors used based on the diagnostic plots between questions 5f and 5g.
+**Question 5i:** Compare the effectiveness of the logistic classier depending on the number of regressors used based on the diagnostic plots between questions 5f and 5g.
 """
 
 # ╔═╡ cd331dad-7fe9-4f1e-94db-3d103bc7a350
@@ -362,10 +362,10 @@ function fit_logistic_regression( fm::FormulaTerm, data::DataFrame )
 end
 
 # ╔═╡ ad86f7c4-cce8-446c-bed1-eae4800f1bda
-function make_threshold_list(;num_small=16, num_mid=10, num_large=8) 
-	vcat(10 .^ range(-8,stop=-1, length=num_small), 
-		range(0.1, stop=0.9, length=num_mid+2)[2:end-1], 
-		reverse(1 .- 8 .^ range(-10,stop=-1, length=num_large)) 
+function make_threshold_list(;num_small=16, num_mid=10, num_large=8)
+	vcat(10 .^ range(-8,stop=-1, length=num_small),
+		range(0.1, stop=0.9, length=num_mid+2)[2:end-1],
+		reverse(1 .- 8 .^ range(-10,stop=-1, length=num_large))
 		)
 end
 
@@ -373,7 +373,7 @@ end
 accuracy(model, data::DataFrame; threshold::Real = 0.5) = sum( classify(model, threshold=threshold) .== data.label ) / length(data.label)
 
 # ╔═╡ a6338962-ef11-479d-8e3c-1975703b1058
-misclassified(model, data::DataFrame; threshold::Real=0.5) = classify(model, threshold=threshold) .!= data.label 
+misclassified(model, data::DataFrame; threshold::Real=0.5) = classify(model, threshold=threshold) .!= data.label
 
 # ╔═╡ 5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
 function calc_classification_diagnostics(model, data; threshold = 0.5)
@@ -382,7 +382,7 @@ function calc_classification_diagnostics(model, data; threshold = 0.5)
 	num_true_negatives  = sum(  data.label.==0 .&& .!pred)
 	num_false_negatives = sum(  data.label.==1 .&& .!pred)
 	num_false_positives = sum(  data.label.==0 .&&   pred)
-	
+
 	num_condition_positives = num_true_positives + num_false_negatives
 	num_condition_negatives = num_true_negatives + num_false_positives
 	num_total = num_condition_positives + num_condition_negatives
@@ -400,7 +400,7 @@ function calc_classification_diagnostics(model, data; threshold = 0.5)
 	return (;threshold, accuracy, false_discovery_rate, false_omission_rate, F1_score,
 		false_positive_rate, false_negative_rate, true_positive_rate, true_negative_rate,
 		num_true_positives, num_true_negatives, num_false_positives, num_false_negatives,   
-		num_condition_positives, num_condition_negatives, num_predicted_positives, num_predicted_negatives, 
+		num_condition_positives, num_condition_negatives, num_predicted_positives, num_predicted_negatives,
 		num_total, prevalence )
 end
 
@@ -416,7 +416,7 @@ function binary_classification_table(diag; digits::Integer=2)
 	npn = diag.num_predicted_negatives
 	nt = diag.num_total
     md"""
-|                     | Predicted Positive | Predicted Negative| Count | 
+|                     | Predicted Positive | Predicted Negative| Count |
 |:--------------------|--------------------|-------------------|-------|
 | **Actual Positive** | $apppr%            | $appnr%           | $ncp  |
 | **Actual Negative** | $anppr%            | $anpnr%           | $ncf  |          
@@ -443,7 +443,7 @@ function find_or_download_data(data_filename::String, url::String)
 		isdir(data_path) || mkdir(data_path)
 		data_path = joinpath(data_path,"data")
 		isdir(data_path) || mkdir(data_path)
-	end	
+	end
 	data_path = joinpath(data_path,data_filename)
 	if !(filesize(data_path) > 0)
 		Downloads.download(url, data_path)
@@ -461,13 +461,13 @@ end
 # ╔═╡ 9e59eece-1853-468b-84f6-3a28f3852f9c
 begin
 	data = CSV.read(data_path,DataFrame) #,limit=40000)
-	data[:,:label] .= 1 .- data[:,:label]  # Make label=1 for high-z quaesars
+	data[:,:label] .= 1 .- data[:,:label]  # Make label=1 for high-z quasars
 	data
 end
 
 # ╔═╡ 50e27175-3261-4889-a4f6-4d4267b19a19
 begin
-	label_mask = data.label .== 1   # high-z quaesars indicated with a label of 1
+	label_mask = data.label .== 1   # high-z quasars indicated with a label of 1
 	frac_label_1 = sum(label_mask)/length(data.label)
 end
 
@@ -479,11 +479,11 @@ predict(lrm_all)
 
 # ╔═╡ 42f4b383-b5db-47ca-9e18-8f26fa8eae3b
 let
-	plt1 = histogram(predict(lrm_all)[label_mask], nbins=20, legend=:none, label="1", fc=:red, title="high-z quaesars")
+	plt1 = histogram(predict(lrm_all)[label_mask], nbins=20, legend=:none, label="1", fc=:red, title="high-z quasars")
 	xlabel!(plt1,L"\theta_i")
 	plt2 = histogram(predict(lrm_all)[.!label_mask], nbins=20, legend=:none, label="0", fc=:blue, title="other objects")
 	xlabel!(plt2,L"\theta_i")
-	
+
 	l = @layout [a; b]
 	plt = plot(plt1,plt2, layout=l )
 	ylabel!(plt,"Number")
@@ -492,7 +492,7 @@ end
 # ╔═╡ 1541d99c-e7af-4504-99e2-987d522c7ed1
 begin
 	lrm_2d_ready =  lrm_2d_vars[1] != lrm_2d_vars[2]
-	if lrm_2d_ready 
+	if lrm_2d_ready
 		formula_2d = Term(:label) ~ term(1) + term.(lrm_2d_vars);
 		lrm_2d = fit_logistic_regression(formula_2d, data)
 	end
@@ -500,11 +500,11 @@ end
 
 # ╔═╡ c4824594-56a5-448c-87a4-0d84272a61e7
 if lrm_2d_ready
-	plt1 = histogram(predict(lrm_2d)[label_mask], nbins=20, legend=:none, label="1", fc=:red, title="high-z quaesars")
+	plt1 = histogram(predict(lrm_2d)[label_mask], nbins=20, legend=:none, label="1", fc=:red, title="high-z quasars")
 	xlabel!(plt1,L"\theta_i")
 	plt2 = histogram(predict(lrm_2d)[.!label_mask], nbins=20, legend=:none, label="0", fc=:blue, title="other objects")
 	xlabel!(plt2,L"\theta_i")
-	
+
 	l = @layout [a; b]
 	plt = plot(plt1,plt2, layout=l )
 	ylabel!(plt,"Number")
@@ -523,7 +523,7 @@ function plot_logistic_contours_scatter(model, data, x_col::Symbol, y_col::Symbo
 	@assert( "label" ∈ names(data) )
 	#@assert( term(x_col) ∈ model.mf.f.rhs.terms)  # issue with unknown vs continuous  term
 	#@assert( term(y_col) ∈ model.mf.f.rhs.terms)
-	
+
 	extreme_x = extrema(data[!,x_col])
 	extreme_y = extrema(data[!,y_col])
 	x_grid = range(extreme_x[1], stop=extreme_x[2], length=grid_size)
@@ -533,12 +533,12 @@ function plot_logistic_contours_scatter(model, data, x_col::Symbol, y_col::Symbo
 	contour!(plt, x_grid,y_grid,z_grid, colorbar_title=L"\theta_i")
 	xlabel!(string(x_col))
 	ylabel!(string(y_col))
-	
+
 	idx_sample = sample(1:size(data,1),num_pts_plt,replace=false,ordered=true)
 	x_pts = data[idx_sample, x_col]
 	y_pts = data[idx_sample, y_col]
 	z_pts = predict(lrm_2d)
-	mask = data.label[idx_sample] .== 1 
+	mask = data.label[idx_sample] .== 1
 
 	scatter!(plt, x_pts[.!mask],   y_pts[.!mask], ms=1.5, markerstrokewidth=0, mc=:blue, label="Other" )
 	scatter!(plt, x_pts[mask], y_pts[mask],   ms=1.5, markerstrokewidth=0, mc=:red, label="High-z quaesar" )
@@ -581,7 +581,7 @@ end
 
 # ╔═╡ 2f734a61-e940-40e5-84c3-4bc0d3b4687f
 begin
-	Δk = length(lrm_all.mf.f.rhs.terms) - length(lrm_2d.mf.f.rhs.terms) 
+	Δk = length(lrm_all.mf.f.rhs.terms) - length(lrm_2d.mf.f.rhs.terms)
 	Δklogn = Δk*log(diag_all.num_total)
 	(;Δk , Δklogn)
 end
@@ -601,7 +601,7 @@ end;
 # ╔═╡ 98c554e1-694f-4df4-b34e-3a0b3921f773
 let
 	df = diagnostics_vs_threshold
-	plt1 = 
+	plt1 =
 	plot(df.threshold,df.false_negative_rate, xscale=:log10, lc=:red, label=:none)#"False ", legend=:bottomright)
 	scatter!(plt1, df.threshold,df.false_negative_rate, mc=:red, label=:none)
 	xlabel!(plt1,"Threshold")
@@ -609,28 +609,28 @@ let
 	xlims!(plt1,1e-4,1)
 	ylims!(plt1,0,1)
 
-	plt2 = 
+	plt2 =
 	plot(df.threshold,df.false_positive_rate, xscale=:log10, lc=:red, label=:none)#"False ", legend=:bottomright)
 	scatter!(plt2, df.threshold,df.false_positive_rate, mc=:red, label=:none)
 	xlabel!(plt2,"Threshold")
 	ylabel!(plt2,"False Positive Rate")
 	xlims!(plt2,1e-4,1)
 	ylims!(plt2,0,1)
-	
+
 	plt3 = plot(df.threshold,df.false_discovery_rate, xscale=:log10, lc=:red, label=:none)#"False ", legend=:bottomright)
 	scatter!(plt3, df.threshold,df.false_discovery_rate, mc=:red, label=:none)
 	xlabel!(plt3,"Threshold")
 	ylabel!(plt3,"False Discovery Rate")
 	xlims!(plt3,1e-4,1)
 	ylims!(plt3,0,1)
-	
+
 	plt4 = plot(df.threshold,df.false_omission_rate, xscale=:log10, lc=:red, label=:none)#"False ", legend=:bottomright)
 	scatter!(plt4, df.threshold,df.false_omission_rate, mc=:red, label=:none)
 	xlabel!(plt4,"Threshold")
 	ylabel!(plt4,"False Omission Rate")
 	xlims!(plt4,1e-4,1)
 	ylims!(plt4,0,1)
-	
+
 
 	plt5 = plot(df.false_positive_rate,df.true_positive_rate, lc=:red, label="ROC Curve", legend=:bottomright)
 	scatter!(plt5,df.false_positive_rate,df.true_positive_rate, label=:none, mc=:red)
@@ -657,7 +657,7 @@ end
 # ╔═╡ 32c9945d-a30e-4a95-9065-e867c59ebf06
 begin
 	candidate_terms = fm_all.rhs
-	fm_5d = Term(:label) ~ term(1) + sum(setdiff(candidate_terms,[term(lrm_excl_1var)])) 
+	fm_5d = Term(:label) ~ term(1) + sum(setdiff(candidate_terms,[term(lrm_excl_1var)]))
 	lrm_5d = fit_logistic_regression(fm_5d, data)
 end
 
@@ -672,7 +672,7 @@ function logistic_regression_removing_one_term( formula_start::FormulaTerm, term
 	candidate_terms = formula_start.rhs
 	fm_alt = formula_start.lhs ~ term(1) + sum(setdiff(candidate_terms,[term_to_rm]))
 	lrm_alt = fit_logistic_regression(fm_alt, data)
-	(;formula = fm_alt, model = lrm_alt) 
+	(;formula = fm_alt, model = lrm_alt)
 end
 
 # ╔═╡ fc78e16c-c2ad-4a24-afaf-500c0c25e3d8
@@ -724,7 +724,7 @@ function plot_predictions_2d( data::DataFrame, model, xcol::Symbol, ycol::Symbol
      plot_misclassified::Bool = true, threshold::Real=0.5)		
 	label_mask         = data.label .== 1
 	misclassified_mask =  misclassified(model,data, threshold=threshold)
-	
+
 	plt = plot(palette = palette(:RdBu_4))
 	scatter!(plt, data[label_mask,xcol],data[label_mask,ycol],ms=0,mc=:2, label="True Positive")
 	scatter!(plt, data[.!label_mask,xcol],data[.!label_mask,ycol],ms=0,mc=3, label="True Negative")
@@ -734,7 +734,7 @@ function plot_predictions_2d( data::DataFrame, model, xcol::Symbol, ycol::Symbol
 	end
 	xlabel!(plt,string(xcol))
 	ylabel!(plt,string(ycol))
-	
+
 	return plt
 end
 
