@@ -22,7 +22,7 @@ begin  # Import packages to be used by notebook
 	using ForwardDiff
 
 	using Plots, LaTeXStrings
-	
+
 	using PlutoUI
 	using Markdown, HypertextLiteral
 end
@@ -39,9 +39,9 @@ md"""
 # Function optimization
 
 In research, we frequently encounter tasks that can be formulated as optimization problem, i.e., finding the values that minimize (or maximize) a function.  Some astrophysical examples would be:
-- fitting light curves of exoplanets, finding a star formation rate that leads to an observed stellar population, 
-- reconstructing the geometry of an AGN to match observed broad spectral line profiles, 
-- finding stellar atmospheric parameters that can reproduce observed spectral lines, 
+- fitting light curves of exoplanets, finding a star formation rate that leads to an observed stellar population,
+- reconstructing the geometry of an AGN to match observed broad spectral line profiles,
+- finding stellar atmospheric parameters that can reproduce observed spectral lines,
 - building models of circumstellar disk structure that can match ALMA observations,
 - etc.
 As we learn more about modern statistical methods and Machine Learning (ML), we will see that a recurring theme when implementing an ML model is optimizing (potentially very complex) functions.  
@@ -50,18 +50,18 @@ As we learn more about modern statistical methods and Machine Learning (ML), we 
 # ╔═╡ d1dea7ba-306e-4b90-9e9f-9eaddc13c1f5
 md"""
 !!! question "Your turn!"
-    Can you think of a procedure in your research that could be reformed into an optimization problem? 
+    Can you think of a procedure in your research that could be reformed into an optimization problem?
 """
 
 # ╔═╡ f6906ac2-eb06-464c-8e99-38f86e264595
 md"""
 Let's get started!
 
-#### How can we minimize or maximize a function? 
+#### How can we minimize or maximize a function?
 There are many algorithms for finding the minimum (or maximum) of a function.  
-In this lab, we will explore one foundational (and suprisingly useful) algorithm for function optimization, [__Gradient Descent__](https://ml-cheatsheet.readthedocs.io/en/latest/gradient_descent.html) (sometimes abbreviated GD).
-This method was proposed before modern computers existed.  Later we will see how to use more sophisticated algorithms that are often implemented in optimization libraries. 
-While there are important differecnes in the details, most of the improved methods use similar ideas.
+In this lab, we will explore one foundational (and surprisingly useful) algorithm for function optimization, [__Gradient Descent__](https://ml-cheatsheet.readthedocs.io/en/latest/gradient_descent.html) (sometimes abbreviated GD).
+This method was proposed before modern computers existed.  Later we will see how to use more sophisticated algorithms that are often implemented in optimization libraries.
+While there are important differences in the details, most of the improved methods use similar ideas.
 """
 
 # ╔═╡ 10113bbe-b86d-4dc5-b2d4-e83085098bba
@@ -71,12 +71,12 @@ md"""
 
 # ╔═╡ 89c4616a-84ee-4df3-b304-3acb1e6ccb6e
 md"""
-The goal of an optimization is usually to find the global mode (e.g., best solution).  There are mathematical proofs about when algorithms such as gradient descent will converge to the global mode.  Generallly, you are only guarenteed to find the global minimum (or maximum) if the __objective function__ is [__convex__](https://en.wikipedia.org/wiki/Convex_function).
+The goal of an optimization is usually to find the global mode (e.g., best solution).  There are mathematical proofs about when algorithms such as gradient descent will converge to the global mode.  Generally, you are only guaranteed to find the global minimum (or maximum) if the __objective function__ is [__convex__](https://en.wikipedia.org/wiki/Convex_function).
 """
 
 # ╔═╡ d5fc4a87-c311-47f6-bb8b-f6b984991fc4
 md"""
-In many real world problems, you can't be sure that your objective function is convex.  Even if your objective function is __non-convex__, you can still apply algorithms such as gradient descent to find the lowest possible value within a neighbourhood, i.e. a local minimum or maximum (e.g., best solution within a neighbourhood).  In these cases, the result will depend on how you initialize the algorithm.  
+In many real world problems, you can't be sure that your objective function is convex.  Even if your objective function is __non-convex__, you can still apply algorithms such as gradient descent to find the lowest possible value within a neighborhood, i.e. a local minimum or maximum (e.g., best solution within a neighborhood).  In these cases, the result will depend on how you initialize the algorithm.  
 """
 
 # ╔═╡ 4a6f4998-2e25-485b-9dcd-26ea63b3eead
@@ -86,7 +86,7 @@ To build our intuition for how gradient descent works, let us begin with a simpl
 
 ```math
 	f(x) = 3x^2 + x - 2, \quad x \in [-10, 10]
-``` 
+```
 """
 
 # ╔═╡ 10e281e5-8990-4c06-a4ea-f36054b134f8
@@ -97,13 +97,13 @@ f(x) = 3x^2 + x - 2;
 
 # ╔═╡ f47a762a-017a-4e0b-92a8-1687250aeb57
 let
-	x_plt = -10:0.1:10	
+	x_plt = -10:0.1:10
 	plot(x_plt, f.(x_plt), xlabel="x", ylabel="f(x)", color="black", legend=false)
 end
 
 # ╔═╡ 053b15d0-600d-411a-8224-6affc138214f
 md"""
-We can use gradient descent algorithm to find the minimum by following an itterative algorithm to compute an improved guess for the minimum, ``x_{n+1}`` from the a given point ``x_n`` using the following steps:
+We can use gradient descent algorithm to find the minimum by following an iterative algorithm to compute an improved guess for the minimum, ``x_{n+1}`` from the a given point ``x_n`` using the following steps:
 
 1. Choose a random initial starting point ``x_o``.  
 2. Compute ``\nabla f(x_i)``, the gradient of ``f(x)`` at the current position, ``x_i``
@@ -111,7 +111,7 @@ We can use gradient descent algorithm to find the minimum by following an ittera
 4. Take a step from ``x_i`` towards the minimum, i.e.,  set ``x_{i+1} = x_i - \eta \nabla f(x_i)`` .
 5. Increase ``i`` and repeat 2 through 4 until a stopping criterion is met (e.g., step is smaller than a desired tolerance)
 
-Mathematically, 
+Mathematically,
 
 ```math
     x_1 = x_o
@@ -123,7 +123,7 @@ md"""
 ```math
 	x_{n+1} = x_n  - \eta \nabla f(x_n), \quad n \in \mathbb{Z}^+
 ```
-In our univariate example, the gradient of ``f(x)`` is just its derivative. 
+In our univariate example, the gradient of ``f(x)`` is just its derivative.
 
 ```math
 	 \nabla f(x) = f_x(x) = \dfrac{df}{dx}(x) = 6x + 1
@@ -155,7 +155,7 @@ elseif  response_x2 ≈ 3.1
 	x_2 = x_1 - \eta f_x(x_1) = 8 - 0.1(49) = 3.1
 	```=#
 	md""" Correct.  
-	The next itteration would be
+	The next iteration would be
 	```math
 	x_3 = x_2 - \eta f_x(x_2) = 3.1 - 0.1(19.6) = 1.14
 	```
@@ -180,13 +180,13 @@ We also need a wrapper function to initialize ``x_i``, repeatedly compute the st
 
 # ╔═╡ c630a893-a6c7-4818-b99c-29fd5afaf85d
 function univariate_gd(fₓ, xₒ, η; tol=1e-6, max_iter=500)
-	history = zeros(max_iter) 
+	history = zeros(max_iter)
 	history[1] = x = xₒ                        # Log initial guess
 	for i in 2:max_iter
 		step = compute_step_gd(fₓ,x,η)         # compute step to take
 		x = x - step             			   # take step
 		history[i] = x  
-		if abs(step) < tol                     # step was smaller than toelrance
+		if abs(step) < tol                     # step was smaller than tolerance
 			resize!(history,i)				   # keep only iterations taken
 			break                              # so we can quit early
 		end
@@ -197,7 +197,7 @@ end;
 # ╔═╡ 4447b740-0e17-4f45-9fc3-e4f9514e28f9
 md"""
 We have replotted ``f(x)`` below with our initial point ``x_1`` indicated.
-We also list the learning rate, initial guess, difference between the current itteration and the true minimum, and ``\Delta f(x)``, the difference in the objective function evaluted at the location of the current itteration and the objective function evaluated at the true minimum.
+We also list the learning rate, initial guess, difference between the current iteration and the true minimum, and ``\Delta f(x)``, the difference in the objective function evaluated at the location of the current iteration and the objective function evaluated at the true minimum.
 """
 
 # ╔═╡ 47bef150-c19b-45d5-96d3-1a90f47ca582
@@ -224,14 +224,14 @@ end;
 md"""
 Iteration: $(@bind n_plt Slider(1:length(history), default=1))
 
-As you drag the slider from left to right, you'll reveal the value ``x_i`` for additional itterations of the gradient descent algorithm.  Where do you expect the  next two guesses to be?  
+As you drag the slider from left to right, you'll reveal the value ``x_i`` for additional iterations of the gradient descent algorithm.  Where do you expect the  next two guesses to be?  
 
 Draft the slider above to reveal the trajectory that gradient descent takes.  The initial guess will become blue, and the final estimate will be in red.  
 """
 
 # ╔═╡ 0bbd734d-4e2a-4152-80fd-43bd8b42c13c
 let
-	x_plt = -10:0.1:10	
+	x_plt = -10:0.1:10
 	plot(x_plt, f.(x_plt), xlabel="x", ylabel="f(x)", color="black", legend=:none)
 	plot!(history[1:n_plt], f.(history[1:n_plt]), markershape = :circle, color="grey")
 	plot!(history[1:1], f.(history[1:1]), markershape = :circle, color="blue")
@@ -247,11 +247,11 @@ end
 
 # ╔═╡ d1881047-bd5c-4c4e-bb41-5ca36deac6f7
 md"""
-We mentioned that ``\eta`` scales the gradient effectively controlling how big steps are taken in the direction of the gradient at each iteration. This value influences the performance of your model (potentially strongly). 
-- Too small of a learning rate and it will take many iterations to optimize the objective function.  For a simple problem like this, that may not be a big deal.  But if the function you are attempting to optimize is more complex, then each model evaluation may be quite expensive.  Taking too many small steps may make it impractical to converge to the minimum in a reasonable ammount of time.
+We mentioned that ``\eta`` scales the gradient effectively controlling how big steps are taken in the direction of the gradient at each iteration. This value influences the performance of your model (potentially strongly).
+- Too small of a learning rate and it will take many iterations to optimize the objective function.  For a simple problem like this, that may not be a big deal.  But if the function you are attempting to optimize is more complex, then each model evaluation may be quite expensive.  Taking too many small steps may make it impractical to converge to the minimum in a reasonable amount of time.
 - Too large of a learning rate will result in overshooting the minimum.  For a convex function like this one, the consequence will be slow convergence.  But for non-convex functions, the algorithm might meander to a different minimum or even worse diverge!
 
-How do we pick the best ``\eta`` value? There are heuristics and libraries that suggested values, but it is a good idea to getta feel of how ``\eta`` changes the behaviour of the gradient descent algorithm. We'll explore this more in the next example.
+How do we pick the best ``\eta`` value? There are heuristics and libraries that suggested values, but it is a good idea to get a feel of how ``\eta`` changes the behavior of the gradient descent algorithm. We'll explore this more in the next example.
 
 """
 
@@ -265,13 +265,13 @@ md"""Below is a quartic function and its derivative."""
 
 # ╔═╡ 843b960f-1198-48d7-b18f-a046b0f56711
 begin
-	g(x) = 0.05x^4 - 3.5x^2 + 6x 
+	g(x) = 0.05x^4 - 3.5x^2 + 6x
 	gₓ(x) = 0.2x^3 - 7x + 6
 end;
 
 # ╔═╡ 816cafa8-412e-4323-8d75-a526391c2a24
 md"""
-We will specify two different starting points (green and brown) for applying the gradient descent algorithm. 
+We will specify two different starting points (green and brown) for applying the gradient descent algorithm.
 """
 
 # ╔═╡ ee0c466c-2765-4ff6-b6de-d7d8ed747036
@@ -279,12 +279,12 @@ x_left, x_right = -9.5, 9.5;
 
 # ╔═╡ 103c05e7-0985-4522-b225-43352631aff6
 md"""
-The starting points are shown as large triangles and the stopping points are shown as a large octagon.  The smaller points show the trajectory that the gradient descent algorithm took.  As you may have already intuited by now, GD is the process of tracing the gradient to a minima akin to always following the steepest path down a hill to the valley for dinner after a long day of hiking. 🍕 
+The starting points are shown as large triangles and the stopping points are shown as a large octagon.  The smaller points show the trajectory that the gradient descent algorithm took.  As you may have already intuited by now, GD is the process of tracing the gradient to a minima akin to always following the steepest path down a hill to the valley for dinner after a long day of hiking. 🍕
 
 ### Learning rate for non-convex objective function
 What do you predict will happen as you increase the learning rate, ``\eta``?
 
-Move the slider around to see what changing ``\eta`` does and test your prediction. 
+Move the slider around to see what changing ``\eta`` does and test your prediction.
 
 """
 
@@ -302,7 +302,7 @@ end;
 begin
 	x_plt = -10.0:0.1:10.0
 	plot(x_plt, g.(x_plt), color="black", legend=false)
-	
+
 	min_g_l = last(h_g_l)
 	min_g_r = last(h_g_r)
 	# Starting points
@@ -314,8 +314,8 @@ begin
 	# Trajectories
 	plot!(h_g_l, g.(h_g_l), markershape=:circle, markersize=3, color="forestgreen")
 	plot!(h_g_r, g.(h_g_r), markershape=:utriangle, markersize=3, markeredgesize=0, color="chocolate2")
-	
-	xlabel!("x")	
+
+	xlabel!("x")
 	ylabel!("g(x)")
 
 	xlims!(-11, 11)
@@ -324,7 +324,7 @@ end
 
 # ╔═╡ 0d85e4dc-4251-473b-9029-d6ade20c4fcc
 md"""
-As you move the slider to the right, notice that the first step becomes larger.  At first, this reduces the number of itterations before convergence.  However, if you keep increasing ``\eta`` further, it will overshoot and cause the algorithm to convergence at different minmum. 
+As you move the slider to the right, notice that the first step becomes larger.  At first, this reduces the number of iterations before convergence.  However, if you keep increasing ``\eta`` further, it will overshoot and cause the algorithm to convergence at different minimum.
 
 If we keep going to even larger ``\eta``'s, then we see that the hexagon marked lines have trouble finding the minima and eventually both solution fails to converge (the brown one even diverges to infinity!).
 """
@@ -332,7 +332,7 @@ If we keep going to even larger ``\eta``'s, then we see that the hexagon marked 
 # ╔═╡ 0c157ab2-05b8-4ad6-ac0c-a0373baf5bd6
 md"""
 !!! tip "Pro tip"
-    In real world applications, **most** optimization problems involve functions that are non-convex.  Therefore, it is important to realize that the solution returned by an itterative algorithm may not necessarily be the global minimum. 
+    In real world applications, **most** optimization problems involve functions that are non-convex.  Therefore, it is important to realize that the solution returned by an iterative algorithm may not necessarily be the global minimum.
     For a univariate problem, it's often practical to scan the domain of your function for a global minima.  However, this gets prohibitively expense in higher dimensions - imagine manually figuring this out for a 50-dimensional multivariate function!
 """
 
@@ -340,13 +340,13 @@ md"""
 md"""
 ## Gradient Descent in Higher Dimensions
 
-One of the great things about the gradient descent algorithm is that the idea of following the steepest path down a hill generalizes to higher dimensional cases. 
+One of the great things about the gradient descent algorithm is that the idea of following the steepest path down a hill generalizes to higher dimensional cases.
 
-Now its your turn.  We've provided a shell funciton, `my_multivariate_GD` below.  But it's missing two critical steps.  Your task is implement the logic for multivariate gradient descent in the following cell by replacing the code for `step` and updating `x` on lines 8 and 9. 
+Now its your turn.  We've provided a shell function, `my_multivariate_GD` below.  But it's missing two critical steps.  Your task is implement the logic for multivariate gradient descent in the following cell by replacing the code for `step` and updating `x` on lines 8 and 9.
 """
 
 # ╔═╡ ed2581f6-21c3-465f-8578-4c6782fc929e
-function my_multivariate_GD(∇f::Function, xₒ::Vector, η::Real; 
+function my_multivariate_GD(∇f::Function, xₒ::Vector, η::Real;
 					 		tol::Real=1e-6, max_iter::Integer=500)
 	history = zeros(length(xₒ), max_iter) # 2-d array to store history
 	history[:,1] .= xₒ                    # Log initial state
@@ -361,7 +361,7 @@ function my_multivariate_GD(∇f::Function, xₒ::Vector, η::Real;
 			break                        # We can exit early
 		end
 	end
-	return history 
+	return history
 end
 
 # ╔═╡ bade00b7-4e71-4375-8bc3-64e5985e35e4
@@ -372,7 +372,7 @@ Click here to skip ahead: $(@bind skip_multivariate CheckBox())
 # ╔═╡ fc3c3227-5680-43cd-9779-919c90690f1c
 md"""
 ### Convex function
-Now, we'll demonstrate our multi-dimensional gradient descent on a simpel convex function, `f_multi`. 
+Now, we'll demonstrate our multi-dimensional gradient descent on a simple convex function, `f_multi`.
 """
 
 # ╔═╡ c2dd09df-a967-46ac-9c8b-c350b2cea7cd
@@ -391,10 +391,10 @@ begin
 end;
 
 # ╔═╡ 1c2438b5-2d85-4753-aef6-740f583fe814
-md"""The large triangle marker is the starting point.  Each circle shows another itteration.  The algorithm manages to find the minima quite easily since we have a convex function. 
+md"""The large triangle marker is the starting point.  Each circle shows another iteration.  The algorithm manages to find the minima quite easily since we have a convex function.
 
 ### Non-convex function
-Now we'll try again, but using with a more complicated objective function that is not convenx. 
+Now we'll try again, but using with a more complicated objective function that is not convex.
 """
 
 
@@ -442,20 +442,20 @@ end;
 
 # ╔═╡ d3849cc2-f0fd-49b4-aa9c-12fedfb0600a
 md"""
-Not so simple anymore, eh? The contour plot above has many local minimas and saddle points. Depending on your starting condition, you might end up in one of the numerous local minimas or at a saddle point. This is how you can get some varying results at different iterations when optimizing a function with machine learning.
+Not so simple anymore, eh? The contour plot above has many local minima and saddle points. Depending on your starting condition, you might end up in one of the numerous local minima or at a saddle point. This is how you can get some varying results at different iterations when optimizing a function with machine learning.
 """
 
 # ╔═╡ fad5bfc8-1b5e-4ec9-92c4-84f499dfa8ca
 md"""
 !!! question "Check your understanding"
-    If you look carefully, you might notice that the step size gets smaller as we 
+    If you look carefully, you might notice that the step size gets smaller as we
     converge to a minima. Why does this happen even when ``\eta`` remains constant?
 """
 
 # ╔═╡ 1a24d1cf-f8f6-4264-9dc2-d0026dedc752
 md"""
 ## Optimization Libraries
-While the standard gradient descent algorithm can be easily implemented by hand, there are several variations.  Conjugate gradient descent can be more efficient for many simple problems.  For converging more rapidly, it can beuseful to use "acceleration".  For high dimensional problems, it can be helpful to add "momentum".  For maximizing the chance of convergence, it's useful to make use of ["Nesterov acceleration"](https://jlmelville.github.io/mize/nesterov.html).  For example, when fitting models to large data sets, "stochastic" and "mini-batch" gradient descent can be quite useful.  With so many choices, you may want to try a few different algorithms and compare their performance.  It wold be nice if you didn't have to implement each yourself.  Fortunately, most modern high-level programming langauges have packages or libraries that implementing gradient descent and several variants.  
+While the standard gradient descent algorithm can be easily implemented by hand, there are several variations.  Conjugate gradient descent can be more efficient for many simple problems.  For converging more rapidly, it can be useful to use "acceleration".  For high dimensional problems, it can be helpful to add "momentum".  For maximizing the chance of convergence, it's useful to make use of ["Nesterov acceleration"](https://jlmelville.github.io/mize/nesterov.html).  For example, when fitting models to large data sets, "stochastic" and "mini-batch" gradient descent can be quite useful.  With so many choices, you may want to try a few different algorithms and compare their performance.  It wold be nice if you didn't have to implement each yourself.  Fortunately, most modern high-level programming langauges have packages or libraries that implementing gradient descent and several variants.  
 
 For Julia users, [Optim.jl](https://julianlsolvers.github.io/Optim.jl/stable/) is a good starting point.  In addition to gradient descent, it provide conjugate gradient descent, [Nelder-Mead](https://julianlsolvers.github.io/Optim.jl/stable/#algo/nelder_mead/) for problems where computing the gradient is impractical and [BFGS](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm) (and it's lower memory version L-BFGS) that are very often good choices when one can compute the gradient.  For high-dimensional problems, the [Flux.jl](https://fluxml.ai/Flux.jl/stable/training/optimisers/) package provides several optimization algorithms more commonly used with neural networks (which we'll discuss later in the week).  
 """
@@ -491,7 +491,7 @@ Next, we set the initial coordinates.
 start_optim_1 = [10.0, 10.0];
 
 # ╔═╡ 1f0d94fb-240b-43a1-b60d-6f6dd14bb66b
-md"""We'll call the `optimize` function provided by `Optim`, passing the objective function, the starting point and a variable specifing the optimization algorithm to be used.  We'll start with gradient descent.
+md"""We'll call the `optimize` function provided by `Optim`, passing the objective function, the starting point and a variable specifying the optimization algorithm to be used.  We'll start with gradient descent.
 """
 
 # ╔═╡ 529f442f-182d-45f8-840c-690196ddb52a
@@ -507,7 +507,7 @@ optimize(f_optim, start_optim_1, ConjugateGradient())
 
 # ╔═╡ 652f3b91-d61c-425e-b322-f326ea6893e5
 md"""
-How did the number of objective function evaluations and gradient evalulations compare for the standard gradient descent and conjugate gradient descent?  
+How did the number of objective function evaluations and gradient evaluations compare for the standard gradient descent and conjugate gradient descent?  
 """
 
 # ╔═╡ a33d53fe-7430-41f5-9808-d86df9dffbeb
@@ -551,8 +551,8 @@ md"""
 ### Improving computational efficiency
 In some cases, you may prefer to provide both the objective function and your own function to compute the gradient of the objective function more efficiently.  For example, by pre-allocating memory and repeatedly writing into the same memory, you can minimize unnecessary memory allocations and improve the performance.  
 
-In order for your gradient function to work with Optim, it takes two parameters, the first called `storage`  is a pre-allocated array where the result will be written. 
-The second arguement is the location to evaluate the gradient.
+In order for your gradient function to work with Optim, it takes two parameters, the first called `storage`  is a pre-allocated array where the result will be written.
+The second argument is the location to evaluate the gradient.
 Since the`storage` parameter will be mutated (i.e., altered) inside the function, we will append an exclamation mark to the function name to remind ourself (and anyone else who reads the code) of this.
 """
 
@@ -582,7 +582,7 @@ Want to see the reference version of the functions we asked you to write?
 Their code is shown below."""
 
 # ╔═╡ 56f8dec7-adf5-4012-87ad-5257f6bef5c1
-function reference_multivariate_GD(∇f::Function, xₒ::Vector, η::Real; 
+function reference_multivariate_GD(∇f::Function, xₒ::Vector, η::Real;
 					tol::Real=1e-6, max_iter::Integer=500)
 	history = zeros(length(xₒ), max_iter)
 	history[:,1] .= xₒ
@@ -590,13 +590,13 @@ function reference_multivariate_GD(∇f::Function, xₒ::Vector, η::Real;
 	step = zeros(length(xₒ))
 	for iter in 2:max_iter
 		step .=  η * ∇f(x)				
-		x = x - step 
+		x = x - step
 		history[:,iter] .= x
 		if sqrt(sum(step.^2)) < tol
 			return history[:,1:iter]
 		end
 	end
-	return history 
+	return history
 end;
 
 # ╔═╡ 24b69a6f-9854-41b6-ac48-ddd5812d63e6
@@ -635,15 +635,15 @@ begin
 	contour(axis_range, axis_range, z, legend=false)
 	plot!(history_2d[1,1:n2], history_2d[2,1:n2], linestyle=:dash, markershape=:circle, color="red")
 	scatter!(history_2d[1,1:1], history_2d[2,1:1], linestyle=:dash, 	markersize=6,markershape=:utriangle, color="red")
-	xlabel!(L"x_1")	
-	ylabel!(L"x_2")	
+	xlabel!(L"x_1")
+	ylabel!(L"x_2")
 end
 
 # ╔═╡ a98651fc-be42-46fd-9fc0-2982d1a52603
 begin
 	start_g = [x_g_2d, y_g_2d]
-	h_g_2d = multivariate_GD(∇g_multi, start_g, η_g_2d)	
-	
+	h_g_2d = multivariate_GD(∇g_multi, start_g, η_g_2d)
+
 	plot!(plt_2d_nc,h_g_2d[1,:], h_g_2d[2,:], markershape=:circle, color="red")
 	scatter!([h_g_2d[1,1]], [h_g_2d[2,1]], markershape=:utriangle, markersize=8, color="red", legend = false)
 end
@@ -665,15 +665,15 @@ hint(hint_title = "Hint:  How to type a ∇?", text = md"To get the ∇ symbol, 
 
 # ╔═╡ 86bb1bf1-eea8-49e1-b9f7-6f741dc9550c
 hint(hint_title = "Hint:  What do '.=' and ':' mean?", text = md"In Julia, if we write, `a = b` then the symbol `a` would point to the same data as stored in `b`.   
-Alternatively, we can write data into an existing array with two arrays `a .= b`. 
+Alternatively, we can write data into an existing array with two arrays `a .= b`.
  The colon (':') operator allows us to specify what range of array it self, allowing us to avoid to unnecessary copies of the whole array.  Therefore,  the syntax `history[:,1] .= xₒ` stores the contents of the vector `xₒ` into the first column of the 2-d array `history`.")
 
 # ╔═╡ dc92ba3f-3195-4941-8066-b5e1151ba3f5
 function aside(x)
 	@htl("""
 		<style>
-		
-		
+
+
 		@media (min-width: calc(700px + 30px + 300px)) {
 			aside.plutoui-aside-wrapper {
 				position: absolute;
@@ -685,20 +685,20 @@ function aside(x)
 			}
 		}
 		</style>
-		
+
 		<aside class="plutoui-aside-wrapper">
 		<div>
 		$(x)
 		</div>
 		</aside>
-		
+
 		""")
 end
 
 # ╔═╡ e432cc65-694e-48fb-b7dc-1a1c44ac5144
 aside(md"""
 !!! terminology "Terminology: Objective Function"
-	There are many names for the function to be optimized.  Each field (and subfield) has their prefered terminology.  Here, we'll refer to the function that we want to optimize the __objective function__.  You might also hear __loss function__, or __target function__, or a name specific to a particular problem at hand, e.g., a log likelihood or energy.  
+	There are many names for the function to be optimized.  Each field (and subfield) has their preferred terminology.  Here, we'll refer to the function that we want to optimize the __objective function__.  You might also hear __loss function__, or __target function__, or a name specific to a particular problem at hand, e.g., a log likelihood or energy.  
 """)
 
 # ╔═╡ c2d926eb-10b5-4b18-9c0e-d15da5e26d2d
