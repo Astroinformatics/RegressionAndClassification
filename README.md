@@ -6,7 +6,7 @@
 
 Suggested Order:
 - gradient_descent.jl (Pluto notebook): Introduction to optimization algorithms, with a focus on gradient descent
-- linear-regression.jl (Pluto notebook):  Introduciton/review of linear regression from a machine learning perspective
+- linear_regression.jl (Pluto notebook):  Introduciton/review of linear regression from a machine learning perspective
 - logistics_regression.jl (Pluto notebook):  Apply Logistic regression to classify High-redshift Quasars
 
 -----
