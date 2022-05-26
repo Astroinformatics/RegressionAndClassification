@@ -789,10 +789,10 @@ let
 	J_mesh = zeros(mesh_size, mesh_size)
 
 	for (idx₀, t₀) ∈ enumerate(θ₀), (idx₁, t₁) ∈ enumerate(θ₁),
-		J_mesh[idx₁, idx₀] = loss_function(y, f(X, [t₀, t₁]))   # CHECK: Are the arges to J_Mesh flipped?
+		J_mesh[ idx₀,idx₁ ] = loss_function(y, f(X, [t₀, t₁]))  
 	end
 	plt = plot(xlabel="θ₀", ylabel="θ₁", zlabel="J", zlims=(0,2e5), camera=(camera1, camera2))
-	surface!(plt,θ₀, θ₁, J_mesh, color=:viridis )
+	surface!(plt,θ₀, θ₁, J_mesh', color=:viridis )
 
 	plot!(plt,
 		view(θ_gd_history,1:n, 1),
