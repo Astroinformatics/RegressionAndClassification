@@ -101,8 +101,8 @@ fm_all = @formula(label ~ 1+ ug + gr + ri + iz + zs1 + s1s2 )
 
 # ╔═╡ 192469ed-a067-4fc2-a997-36b68afadb1e
 md"""
-The next cell fits a logistic regression model to the data using that formula and saves the outcome of logistic regression model using all the potential regressors.
-A table summarizing the maximum likelihood coefficient values for each regressor (along with some related statistics) results is displayed.
+The next cell fits a logistic regression model to the data using that formula and saves the outcome of the logistic regression model using all the potential regressors.
+A table summarizing the maximum likelihood coefficient values for each regressor (along with some related statistics) is displayed.
 """
 
 # ╔═╡ d4b671b8-f9ed-4f02-a00f-23f59b4f7883
@@ -112,7 +112,7 @@ The maximum likelihood estimate for $\beta_1$ (for ug), 2.65072, can be interpre
 
 # ╔═╡ 81cce0d1-6a09-4a5a-8934-db9cf33f8a98
 md"""
-It is important to know that the fit of the logistic regression also produces an estimated probability of being a high-$z$ quasar for each object. This information is useful for making a prediction (or classification), as we'll see below
+It is important to know that the fit of the logistic regression also produces an estimated probability of being a high-$z$ quasar for each object. This information is useful for making a prediction (or classification), as we'll see below.
 
 We can inspect the histogram of the predicted probabilities for the first several objects.
 """
@@ -186,7 +186,7 @@ For example, is our logistic model using 6 colors as inputs better than or stati
 
 The default outputs above did not test whether all features are meaningless (i.e., our model is statistically equivalent to $\beta_1=\beta_2=\cdots=\beta_6=0$) or whether *at least one* feature is meaningful (non-zero) for the purpose of predicting the odds of being a high-$z$ quasar.
 
-We can perform a tests by making use of the following insights.  
+We can perform tests by making use of the following insights.  
 The **deviance** is a measure of the quality of fit and is defined as
 $\mathrm{Deviance} = -2 \ln(\mathrm{likelihood}).$
 The test statistic $T$ is the difference between $\texttt{Residual}$ $\texttt{deviance}$ for a model and $\texttt{Null}$ $\texttt{deviance}$ (i.e., deviance for a model with no regressors).  
@@ -220,7 +220,7 @@ md"""
 Since this $p$-value is much, much smaller than $\alpha=0.05$, we reject the null hypothesis, concluding that the proposed model with 6 colors is at least meaningful.  
 Of course, merely passing this goodness-of-fit test does not always mean that the model is optimal or good for the intended scientific application.  
 
-Now, we can perform a similar tests comparing your logistic regression model with just 2 regressors to the null model.
+Now, we can perform similar tests comparing your logistic regression model with just 2 regressors to the null model.
 """
 
 # ╔═╡ deff64f2-eda5-4902-a9de-fa778fd71ab6
@@ -233,7 +233,7 @@ md"### Model comparison"
 
 # ╔═╡ d280ee8b-31f2-45f5-838b-cac47024c1cc
 md"""
-We can compare two logistic model in a heuristic fashion based on one of the information criteria.  In this case, we will use the Akaike Information Criterion (AIC) rather than the Bayesian Information Criterion (BIC), because BIC may put too heavy penalty on the more complex model when the data size is large.  
+We can compare two logistic model in a heuristic fashion based on one of the information criteria.  In this case, we will use the Akaike Information Criterion (AIC) rather than the Bayesian Information Criterion (BIC), because BIC may put too heavy of a penalty on the more complex model when the data size is large.  
 
 $\mathrm{AIC} = 2k - 2 \ln(\mathrm{likelihood})$
 
@@ -287,7 +287,7 @@ md"""
 # ╔═╡ 5c1ad658-2506-4dd8-8ff1-007e60eedb42
 md"""
 We can compare to the contingency table for the model using only 2 regressors.
-While the ac curacies of the two models are very similar, we see that there is a more substantial difference in the false discovery rate.
+While the accuracies of the two models are very similar, we see that there is a more substantial difference in the false discovery rate.
 """
 
 # ╔═╡ d18eadc8-03e7-4571-97aa-df4e0e8975b1
