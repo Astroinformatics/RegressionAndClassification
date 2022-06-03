@@ -29,7 +29,7 @@ end
 md"""
 We begin our exploration of the world of machine learning with the classic topic of linear regression.  While you have likely seen linear regression previously, linear regression is such a foundational tool, that it's worth a quick refresher.  
 
-Often in astrophysics, research we'd like to find a relationship between variables. Occasionally, we look for relationships that we anticipate are likely to be linear.  For instance, in the absence of influence from external forces, we would expect a planet's orbit to be periodic.  In this case linear regrssion would be the starting point for fitting a model to observed transit times to find the orbital period.  
+Often in astrophysics research we'd like to find a relationship between variables. Occasionally, we look for relationships that we anticipate are likely to be linear.  For instance, in the absence of influence from external forces, we would expect a planet's orbit to be periodic.  In this case, linear regrssion would be the starting point for fitting a model to observed transit times to find the orbital period.  
 """
 #Extraneous influence will cause the transit times to vary, allowing observers to infer properties of the other body(s), even if it does not transit.
 
@@ -53,7 +53,7 @@ Alternatively, in matrix-vector equation, we can express the same model as
 		\mathbf{y},\,\mathbf{\varepsilon} \in \mathbb{R}^N
 	\,\},
 ```
-which when fullly expanded gives us a system of ``N`` equations with ``K`` variables,
+which when fully expanded gives us a system of ``N`` equations with ``K`` variables,
 ```math
 	\begin{bmatrix}
 		y_1\\
@@ -143,7 +143,7 @@ Since we would like to find a ``\mathbf{\hat{\beta}}`` that minimizes the expres
 	=
 	0
 ```
-which finally yields us our an expression for $\mathbf{\hat{\beta}}$:
+which finally yields us an expression for $\mathbf{\hat{\beta}}$:
 ```math
 	\mathbf{X}^\intercal \mathbf{X}\mathbf{\hat{\beta}}
 	=
@@ -158,7 +158,7 @@ which finally yields us our an expression for $\mathbf{\hat{\beta}}$:
 # ╔═╡ 5e971191-3353-428c-b26b-dfc0bcbf1c63
 md"""
 ### Linear Algebra
-Another approach which some find to more intuitive is to thinking of the problem geometrically. The fundamental problem is to solve an overdetermined linear system (i.e., there are more constraint equations than unknown) of ``\mathbf{X}\mathbf{\beta} = \mathbf{y}``.  
+Another approach which some find more intuitive is to think of the problem geometrically. The fundamental problem is to solve an overdetermined linear system (i.e., there are more constraint equations than unknown) of ``\mathbf{X}\mathbf{\beta} = \mathbf{y}``.  
 """
 
 # ╔═╡ a61518a4-6e42-4d8a-af8d-4d2a9605eef1
@@ -363,8 +363,8 @@ where ``\eta`` is the learning rate.
 
 # ╔═╡ 1e1f47cc-6b61-42f8-aebe-8a78779bd9e3
 md"""
-!!! note "Question:  Differences choice of loss function"
-	How would the gradient descent algorithm be affected if we had chosen to use mean of the squared errors (MSE) as our objective function instead of the sum of squared errors (SSE)?  What about if we had used the negative log likelihood for ordinary least squares?  How would the differences between these these functions affect the local of the minimum and/or the gradient of the loss function?
+!!! note "Question:  Differences in choice of loss function"
+	How would the gradient descent algorithm be affected if we had chosen to use mean of the squared errors (MSE) as our objective function instead of the sum of squared errors (SSE)?  What about if we had used the negative log likelihood for ordinary least squares?  How would the differences between these functions affect the local of the minimum and/or the gradient of the loss function?
 """
 
 # ╔═╡ 0f5eb443-2884-4f0e-80b1-6bd0f10356aa
@@ -419,7 +419,7 @@ To help visualize the gradient descent process, let us visualize the loss functi
 
 # ╔═╡ 7870356f-f6ce-40be-9c69-6ff7459ded02
 md"""
-**Question:**  What changes in the trajectory of the $\theta_i$'s occurs near the plateau in the loss function?
+**Question:**  What changes in the trajectory of the $\theta_i$'s occur near the plateau in the loss function?
 """
 
 # ╔═╡ a022804a-9d68-409a-8a8f-abfa1cc61a10
@@ -468,7 +468,7 @@ Often in astronomy & astrophysics, we have access to the measurement uncertainti
 Usually, these are not equal, violating one of the assumptions of ordinary least squares.  
 If the measurement errors are all independent and uncorrelated, then we can use [weighted linear regression](https://en.wikipedia.org/wiki/Weighted_least_squares).  
 
-If all of the assumptions we made on OLS is valid, then we would expect the errors, $\mathbf{\epsilon}$, to be drawn from a multivariate normal distribution with zero mean, and a  [covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix)
+If all of the assumptions we made on OLS are valid, then we would expect the errors, $\mathbf{\epsilon}$, to be drawn from a multivariate normal distribution with zero mean, and a  [covariance matrix](https://en.wikipedia.org/wiki/Covariance_matrix)
 ```math
 	\mathbf{\Sigma} = \sigma^2 \mathbf{I}
 	=
@@ -497,7 +497,7 @@ However, when the errors have non-constant variance, the diagonal entries in the
 		0 		& 0 		& \ldots & \sigma^{-2}_N\\
 	\end{bmatrix}
 ```
-This means that the objective function is changed to reflect the weight of each observation -- smaller variances are have more importance than larger variances i.e.
+This means that the objective function is changed to reflect the weight of each observation -- smaller variances have more importance than larger variances i.e.
 ```math
 	J_\textrm{WLS}(x_i;\, \theta_0,\, \theta_1) = \dfrac{1}{N} \sum_{i = 0}^N \dfrac{1}{\sigma_i^2}(y_i' - y_i)^2
 ```
@@ -518,15 +518,15 @@ In this case, we can make use of [generalized linear regression](https://en.wiki
                            (\mathbf{X}^\intercal\mathbf{\Sigma}^{-1} \mathbf{y}).
 ```
 
-For small problem sizes (matrix with less than $\sim10^3$ rows or columns), one can compute can still compute $\mathbf{\hat{\beta}}$ efficiently via linear algebra.  
-As the size of the system increases, the memory and computational costs rapidly increase. Sometimes there special properties of the covariance matrix (e.g., banded, block diagonal) that allow it to be factorized efficiently.  Otherwise, you may be driven to taking the machine learning approach of estimating $\mathbf{\hat{\beta}}$ via an iterative algorithm.
+For small problem sizes (matrix with less than $\sim10^3$ rows or columns), one can still compute $\mathbf{\hat{\beta}}$ efficiently via linear algebra.  
+As the size of the system increases, the memory and computational costs rapidly increase. Sometimes there are special properties of the covariance matrix (e.g., banded, block diagonal) that allow it to be factorized efficiently.  Otherwise, you may be driven to taking the machine learning approach of estimating $\mathbf{\hat{\beta}}$ via an iterative algorithm.
 
 """
 
 # ╔═╡ 03157430-e8a8-4daf-9689-802ccd1195f8
 md"""
 ## General Linear Regression & Non-linear Models
-Often in astronomy & astrophysics we need to work with models that are non-linear (at least as originally written).  However, in some cases, we can perform a chance of variables that allows us to rewrite the problem as a form linear regression on the transformed variable.  
+Often in astronomy & astrophysics we need to work with models that are non-linear (at least as originally written).  However, in some cases, we can perform a change of variables that allows us to rewrite the problem as a form of linear regression on the transformed variable.  
 
 One example would be replacing fluxes with log fluxes (or magnitudes) to fit a [log-linear model](https://en.wikipedia.org/wiki/Log-linear_model).  Sometimes this requires making some sacrifices (e.g., the measurement uncertainties probably aren't normally distributed in the log flux).  
 
