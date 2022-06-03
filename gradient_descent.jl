@@ -455,9 +455,9 @@ md"""
 # ╔═╡ 1a24d1cf-f8f6-4264-9dc2-d0026dedc752
 md"""
 ## Optimization Libraries
-While the standard gradient descent algorithm can be easily implemented by hand, there are several variations.  Conjugate gradient descent can be more efficient for many simple problems.  For converging more rapidly, it can be useful to use "acceleration".  For high dimensional problems, it can be helpful to add "momentum".  For maximizing the chance of convergence, it's useful to make use of ["Nesterov acceleration"](https://jlmelville.github.io/mize/nesterov.html).  For example, when fitting models to large data sets, "stochastic" and "mini-batch" gradient descent can be quite useful.  With so many choices, you may want to try a few different algorithms and compare their performance.  It would be nice if you didn't have to implement each yourself.  Fortunately, most modern high-level programming langauges have packages or libraries that implementing gradient descent and several variants.  
+While the standard gradient descent algorithm can be easily implemented by hand, there are several variations.  Conjugate gradient descent can be more efficient for many simple problems.  For converging more rapidly, it can be useful to use "acceleration".  For high dimensional problems, it can be helpful to add "momentum".  For maximizing the chance of convergence, it's useful to make use of ["Nesterov acceleration"](https://jlmelville.github.io/mize/nesterov.html).  For example, when fitting models to large data sets, "stochastic" and "mini-batch" gradient descent can be quite useful.  With so many choices, you may want to try a few different algorithms and compare their performance.  It would be nice if you didn't have to implement each yourself.  Fortunately, most modern high-level programming langauges have packages or libraries that implement gradient descent and several variants.  
 
-For Julia users, [Optim.jl](https://julianlsolvers.github.io/Optim.jl/stable/) is a good starting point.  In addition to gradient descent, it provide conjugate gradient descent, [Nelder-Mead](https://julianlsolvers.github.io/Optim.jl/stable/#algo/nelder_mead/) for problems where computing the gradient is impractical and [BFGS](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm) (and it's lower memory version L-BFGS) that are very often good choices when one can compute the gradient.  For high-dimensional problems, the [Flux.jl](https://fluxml.ai/Flux.jl/stable/training/optimisers/) package provides several optimization algorithms more commonly used with neural networks (which we'll discuss later in the week).  
+For Julia users, [Optim.jl](https://julianlsolvers.github.io/Optim.jl/stable/) is a good starting point.  In addition to gradient descent, it provide conjugate gradient descent, [Nelder-Mead](https://julianlsolvers.github.io/Optim.jl/stable/#algo/nelder_mead/) for problems where computing the gradient is impractical and [BFGS](https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm) (and its lower memory version L-BFGS) that are very often good choices when one can compute the gradient.  For high-dimensional problems, the [Flux.jl](https://fluxml.ai/Flux.jl/stable/training/optimisers/) package provides several optimization algorithms more commonly used with neural networks (which we'll discuss later in the week).  
 """
 
 # ╔═╡ caf5e2ea-90e7-4bc1-b251-0108814a1bcc
@@ -513,7 +513,7 @@ How did the number of objective function evaluations and gradient evaluations co
 # ╔═╡ a33d53fe-7430-41f5-9808-d86df9dffbeb
 md"""
 ### Automatic differentiation
-In the examples above, we did not provide a function to compute gradient above, so Optim attempted to approximate the gradient by using central finite differencing.  While convenient, it is important to remember that methods like finite differences are approximations and subject to numerical error!  
+In the examples above, we did not provide a function to compute the gradient above, so Optim attempted to approximate the gradient by using central finite differencing.  While convenient, it is important to remember that methods like finite differences are approximations and subject to numerical error!  
 
 Alternatively, you can specify that it should use automatic differentiation by passing the optional parameter `autodiff = :forward`.  (There are also algorithms for "reverse-mode automatic differentiation", but those aren't fully integrated into Optim.jl yet.)
 """
@@ -572,7 +572,7 @@ optimize(f_optim, ∇f_optim!, start_optim_1, BFGS())
 # ╔═╡ 229f86e4-9059-419d-8be0-ab4ee3b2f6b4
 md"""
 ### Additional reading
-Vanilla gradient descent is a good starting point to understand some of the more advanced variants commonly used in machine linearing. If you're interested in learning more about optimization algorithms, you're invited to read (or skim) [An overview of gradient descent optimization algorithms](https://ruder.io/optimizing-gradient-descent/), and particularly the sections on [Stochastic Gradient Descent](https://ruder.io/optimizing-gradient-descent/index.html#stochasticgradientdescent) and [Mini-Batch Gradient Descent](https://ruder.io/optimizing-gradient-descent/index.html#minibatchgradientdescent).
+Vanilla gradient descent is a good starting point to understand some of the more advanced variants commonly used in machine learning. If you're interested in learning more about optimization algorithms, you're invited to read (or skim) [An overview of gradient descent optimization algorithms](https://ruder.io/optimizing-gradient-descent/), and particularly the sections on [Stochastic Gradient Descent](https://ruder.io/optimizing-gradient-descent/index.html#stochasticgradientdescent) and [Mini-Batch Gradient Descent](https://ruder.io/optimizing-gradient-descent/index.html#minibatchgradientdescent).
 """
 
 # ╔═╡ e8500d66-f1ab-43f2-beee-88e6b3f8f31d
