@@ -394,7 +394,7 @@ end;
 md"""The large triangle marker is the starting point.  Each circle shows another iteration.  The algorithm manages to find the minima quite easily since we have a convex function.
 
 ### Non-convex function
-Now we'll try again, but using with a more complicated objective function that is not convex.
+Now we'll try again, but using a more complicated objective function that is not convex.
 """
 
 
