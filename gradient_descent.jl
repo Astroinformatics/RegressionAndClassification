@@ -403,7 +403,7 @@ g_multi(x) = 16sin(0.1x[1]) + 8cos(0.15x[2]) + 0.02x[1]*x[2] + 0.1x[1] + 0.05x[2
 
 # ╔═╡ b943c9df-ba25-4bf5-baf5-6836499645a4
 md"""
-In this case, we _could_ calculate the gradient ourselves.  But as functions become more complex, that will become more and more time consuming and error prone.  Fortunately, there are now many packaged to compute gradients _automatically_.  
+In this case, we _could_ calculate the gradient ourselves.  But as functions become more complex, that will become more and more time consuming and error prone.  Fortunately, there are now many packages to compute gradients _automatically_.  
 Here's we'll use the `ForwardDiff` package to compute the gradient of `g_multi(x)` for us.
 """
 
