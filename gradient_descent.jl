@@ -38,7 +38,7 @@ md"""
 md"""
 # Function optimization
 
-In research, we frequently encounter tasks that can be formulated as optimization problem, i.e., finding the values that minimize (or maximize) a function.  Some astrophysical examples would be:
+In research, we frequently encounter tasks that can be formulated as an optimization problem, i.e., finding the values that minimize (or maximize) a function.  Some astrophysical examples would be:
 - fitting light curves of exoplanets, finding a star formation rate that leads to an observed stellar population,
 - reconstructing the geometry of an AGN to match observed broad spectral line profiles,
 - finding stellar atmospheric parameters that can reproduce observed spectral lines,
@@ -71,7 +71,7 @@ md"""
 
 # ╔═╡ 89c4616a-84ee-4df3-b304-3acb1e6ccb6e
 md"""
-The goal of an optimization is usually to find the global mode (e.g., best solution).  There are mathematical proofs about when algorithms such as gradient descent will converge to the global mode.  Generally, you are only guaranteed to find the global minimum (or maximum) if the __objective function__ is [__convex__](https://en.wikipedia.org/wiki/Convex_function).
+The goal of an optimization problem is usually to find the global mode (e.g., best solution).  There are mathematical proofs about when algorithms such as gradient descent will converge to the global mode.  Generally, you are only guaranteed to find the global minimum (or maximum) if the __objective function__ is [__convex__](https://en.wikipedia.org/wiki/Convex_function).
 """
 
 # ╔═╡ d5fc4a87-c311-47f6-bb8b-f6b984991fc4
@@ -103,7 +103,7 @@ end
 
 # ╔═╡ 053b15d0-600d-411a-8224-6affc138214f
 md"""
-We can use gradient descent algorithm to find the minimum by following an iterative algorithm to compute an improved guess for the minimum, ``x_{n+1}`` from the a given point ``x_n`` using the following steps:
+We can use the gradient descent algorithm to find the minimum by following an iterative algorithm to compute an improved guess for the minimum, ``x_{n+1}`` from the a given point ``x_n`` using the following steps:
 
 1. Choose a random initial starting point ``x_o``.  
 2. Compute ``\nabla f(x_i)``, the gradient of ``f(x)`` at the current position, ``x_i``
@@ -137,7 +137,7 @@ fₓ(x) = 6x + 1;
 # ╔═╡ 3c84eb23-0c0c-4ed2-92c6-7d4c9abf508a
 #	x_2 = x_1 - \eta f_x(x_1) = 8 - 0.1(49) = 3.1
 md"""
-Let's compute the first two iteration by hand.   
+Let's compute the first two iterations by hand.   
 
 Let's say our initial random point is ``x_1 = 8`` and ``\eta = 0.1``.   
 Then
@@ -226,7 +226,7 @@ Iteration: $(@bind n_plt Slider(1:length(history), default=1))
 
 As you drag the slider from left to right, you'll reveal the value ``x_i`` for additional iterations of the gradient descent algorithm.  Where do you expect the  next two guesses to be?  
 
-Draft the slider above to reveal the trajectory that gradient descent takes.  The initial guess will become blue, and the final estimate will be in red.  
+Drag the slider above to reveal the trajectory that gradient descent takes.  The initial guess will become blue, and the final estimate will be in red.  
 """
 
 # ╔═╡ 0bbd734d-4e2a-4152-80fd-43bd8b42c13c
@@ -279,7 +279,7 @@ x_left, x_right = -9.5, 9.5;
 
 # ╔═╡ 103c05e7-0985-4522-b225-43352631aff6
 md"""
-The starting points are shown as large triangles and the stopping points are shown as a large octagon.  The smaller points show the trajectory that the gradient descent algorithm took.  As you may have already intuited by now, GD is the process of tracing the gradient to a minima akin to always following the steepest path down a hill to the valley for dinner after a long day of hiking. 🍕
+The starting points are shown as large triangles and the stopping points are shown as large octagons.  The smaller points show the trajectory that the gradient descent algorithm took.  As you may have already intuited by now, GD is the process of tracing the gradient to a minima akin to always following the steepest path down a hill to the valley for dinner after a long day of hiking. 🍕
 
 ### Learning rate for non-convex objective function
 What do you predict will happen as you increase the learning rate, ``\eta``?
@@ -342,7 +342,7 @@ md"""
 
 One of the great things about the gradient descent algorithm is that the idea of following the steepest path down a hill generalizes to higher dimensional cases.
 
-Now its your turn.  We've provided a shell function, `my_multivariate_GD` below.  But it's missing two critical steps.  Your task is implement the logic for multivariate gradient descent in the following cell by replacing the code for `step` and updating `x` on lines 8 and 9.
+Now it's your turn.  We've provided a shell function, `my_multivariate_GD` below.  But it's missing two critical steps.  Your task is to implement the logic for multivariate gradient descent in the following cell by replacing the code for `step` and updating `x` on lines 8 and 9.
 """
 
 # ╔═╡ ed2581f6-21c3-465f-8578-4c6782fc929e
