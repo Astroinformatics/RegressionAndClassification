@@ -131,7 +131,7 @@ We can see this because their asymptotic $z$-tests (not $t$-tests) based on the 
 
 # ╔═╡ 86fc2a81-49d6-4f71-9573-3d84e3f54f65
 md"""
-**Question 2a:** Which variable appears to be the least significant variable in our model?
+**Question 2a:** Looking at the $p$-values for each regressor, which variable could we consider excluding from the model?
 """
 
 # ╔═╡ 3e63bdd0-cbc8-4941-a511-72ce6164ea2a
