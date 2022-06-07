@@ -27,9 +27,9 @@ end
 
 # ╔═╡ 38ff28bd-6406-436c-ac0d-faf125febf5b
 md"""
-We begin our exploration of the world of machine learning with the classic topic of linear regression.  While you have likely seen linear regression previously, linear regression is such a foundational tool, that it's worth a quick refresher.  
+We begin our exploration of the world of machine learning with the classic topic of linear regression.  While you have likely seen linear regression previously, linear regression is such a foundational tool that it's worth a quick refresher.  
 
-Often in astrophysics research we'd like to find a relationship between variables. Occasionally, we look for relationships that we anticipate are likely to be linear.  For instance, in the absence of influence from external forces, we would expect a planet's orbit to be periodic.  In this case, linear regrssion would be the starting point for fitting a model to observed transit times to find the orbital period.  
+Often in astrophysics research we'd like to find a relationship between variables. Occasionally, we look for relationships that we anticipate are likely to be linear.  For instance, in the absence of influence from external forces, we would expect a planet's orbit to be periodic.  In this case, linear regression would be the starting point for fitting a model to observed transit times to find the orbital period.  
 """
 #Extraneous influence will cause the transit times to vary, allowing observers to infer properties of the other body(s), even if it does not transit.
 
