@@ -71,7 +71,7 @@ The logistic regression model assumes that each binary response variable $Y_i$ i
 $Y_i\stackrel{\textrm{ind.}}{\sim} \textrm{Bernoulli}(\theta_i)$
 
 
-The mean of the response variable,  $\theta_i~(=E(Y_i))$, is connected to a linear function of regression coefficient via a logit  function.
+The mean of the response variable,  $\theta_i~(=E(Y_i))$, is connected to a linear function of regression coefficients via a logit  function.
 
 $\textrm{logit}(\theta)=\log\left(\frac{\theta_i}{1-\theta_i}\right)=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\cdots+\beta_6x_{i6}+\epsilon_i=x_i^{\top}\beta,$
 
@@ -107,7 +107,7 @@ A table summarizing the maximum likelihood coefficient values for each regressor
 
 # ╔═╡ d4b671b8-f9ed-4f02-a00f-23f59b4f7883
 md"""
-The maximum likelihood estimate for $\beta_1$ (for ug), 2.65072, can be interpreted as follows. "When all the other color features are held constants (i.e., when values of gr, ri, iz, zs1, and s1s2 are fixed at some constants), a unit increase in ug changes the odds of being a high-$z$ quasar by a factor of $\textrm{exp}{2.65072} = 14.16423$. Note that the odds of being a high-$z$ quasar are defined as the probability of being a high-$z$ quasar divided by the probability of not being a high-$z$ quasar, i.e., $\frac{\theta_i}{1 - \theta_i}$.
+The maximum likelihood estimate for $\beta_1$ (for ug), 2.65072, can be interpreted as follows. "When all the other color features are held constants (i.e., when values of gr, ri, iz, zs1, and s1s2 are fixed at some constants), a unit increase in ug changes the odds of being a high-$z$ quasar by a factor of $\textrm{exp}{2.65072} = 14.16423$." Note that the odds of being a high-$z$ quasar are defined as the probability of being a high-$z$ quasar divided by the probability of not being a high-$z$ quasar, i.e., $\frac{\theta_i}{1 - \theta_i}$.
 """
 
 # ╔═╡ 81cce0d1-6a09-4a5a-8934-db9cf33f8a98
