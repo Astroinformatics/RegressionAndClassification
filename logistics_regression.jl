@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.5
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -103,11 +103,6 @@ fm_all = @formula(label ~ 1+ ug + gr + ri + iz + zs1 + s1s2 )
 md"""
 The next cell fits a logistic regression model to the data using that formula and saves the outcome of the logistic regression model using all the potential regressors.
 A table summarizing the maximum likelihood coefficient values for each regressor (along with some related statistics) is displayed.
-"""
-
-# ╔═╡ d4b671b8-f9ed-4f02-a00f-23f59b4f7883
-md"""
-The maximum likelihood estimate for $\beta_1$ (for ug), 2.65072, can be interpreted as follows. "When all the other color features are held constants (i.e., when values of gr, ri, iz, zs1, and s1s2 are fixed at some constants), a unit increase in ug changes the odds of being a high-$z$ quasar by a factor of $\textrm{exp}{2.65072} = 14.16423$." Note that the odds of being a high-$z$ quasar are defined as the probability of being a high-$z$ quasar divided by the probability of not being a high-$z$ quasar, i.e., $\frac{\theta_i}{1 - \theta_i}$.
 """
 
 # ╔═╡ 81cce0d1-6a09-4a5a-8934-db9cf33f8a98
@@ -428,6 +423,9 @@ md"""
 ## Setup
 """
 
+# ╔═╡ 663e62c3-480c-4bc3-a11b-f887754f5a5a
+TableOfContents()
+
 # ╔═╡ 475c352a-5f0d-40c8-ad74-4a4c81e8d5e1
 function find_or_download_data(data_filename::String, url::String)
 	if contains(gethostname(),"ec2.internal")
@@ -473,6 +471,17 @@ end
 
 # ╔═╡ 177df112-4b58-488e-868e-19fea591e3cb
 lrm_all = fit_logistic_regression(fm_all, data)
+
+# ╔═╡ aec4b19f-dea6-4534-b23a-88ea4f8c240f
+begin
+	β_ug_all = round(coef(lrm_all)[2],digits=5)
+	exp_β_ug_all = round(exp(coef(lrm_all)[2]),digits=5)
+end;
+
+# ╔═╡ d4b671b8-f9ed-4f02-a00f-23f59b4f7883
+md"""
+The maximum likelihood estimate for ``\beta_1`` (for ug) can be interpreted as follows. "When all the other color features are held constants (i.e., when values of gr, ri, iz, zs1, and s1s2 are fixed at some constants), a unit increase in ug changes the odds of being a high-``z`` quasar by a factor of exp($(β_ug_all)) = $(exp_β_ug_all)." Note that the odds of being a high-``z`` quasar are defined as the probability of being a high-``z`` quasar divided by the probability of not being a high-``z`` quasar, i.e., ``\frac{\theta_i}{1 - \theta_i}``.
+"""
 
 # ╔═╡ b4ac8465-a1ea-4faf-8f1e-4ba803efe8fe
 predict(lrm_all)
@@ -654,6 +663,9 @@ let
 	ylims!(plt5,0,1)
 end
 
+# ╔═╡ 7515d1f5-0490-417e-808b-28b5902580b5
+plot_predictions_2d(data, lrm_2d, lrm_2d_vars[1], lrm_2d_vars[2], threshold=thresh_2d )
+
 # ╔═╡ 32c9945d-a30e-4a95-9065-e867c59ebf06
 begin
 	candidate_terms = fm_all.rhs
@@ -663,109 +675,6 @@ end
 
 # ╔═╡ 4f2df587-aba9-42e3-b4d0-bf6ef218c0ae
 ΔAIC_6_5 = aic(lrm_all)-aic(lrm_5d)
-
-# ╔═╡ d84e3b2b-2635-4175-a963-2ab49e17d05a
-md"# Extras (potentialy delete)"
-
-# ╔═╡ 4393033f-54c5-42e1-b4cf-f16da0d6729d
-function logistic_regression_removing_one_term( formula_start::FormulaTerm, term_to_rm::Term, data::DataFrame )
-	candidate_terms = formula_start.rhs
-	fm_alt = formula_start.lhs ~ term(1) + sum(setdiff(candidate_terms,[term_to_rm]))
-	lrm_alt = fit_logistic_regression(fm_alt, data)
-	(;formula = fm_alt, model = lrm_alt)
-end
-
-# ╔═╡ fc78e16c-c2ad-4a24-afaf-500c0c25e3d8
-function logistic_regression_pick_one_term_to_remove(fm_full::FormulaTerm, data::DataFrame)
-	candidate_terms = fm_full.rhs
-	aic_out = zeros(length(candidate_terms))
-	aic_best = Inf
-	fm_best = fm_full
-	model_best = fit_logistic_regression(fm_best, data)
-	for (i,t) in enumerate(candidate_terms)
-		if t isa ConstantTerm continue end  # don't remove constant
-		result_alt = logistic_regression_removing_one_term(fm_full,t,data)
-		aic_out[i] = aic(result_alt.model)
-		if aic_out[i] < aic_best
-			fm_best = result_alt.formula
-			model_best = result_alt.model
-			aic_best = aic_out[i]
-		end
-	end
-	if fm_best.rhs isa ConstantTerm
-		term_rm = term(1)
-	else
-		term_rm = first(setdiff(fm_full.rhs,fm_best.rhs))
-	end
-	(;formula=fm_best, model=model_best, term_removed=term_rm)
-end
-
-# ╔═╡ fd316ce4-4aa3-47ac-8915-a86bd99c5c44
-function sequentially_remove_terms(fm_full::FormulaTerm, data::DataFrame)
-	all_terms = fm_full.rhs
-	n = length(all_terms)
-	fm_list = Vector(undef,n)
-	model_list = Vector(undef,n)
-	term_list = Vector(undef,n)
-	fm_list[1] = fm_full
-	model_list[1] = fit_logistic_regression(fm_list[1], data )
-	term_list[1] = nothing
-	for i in 2:n
-		result = logistic_regression_pick_one_term_to_remove(fm_list[i-1], data)
-		fm_list[i] = result.formula
-		model_list[i] = result.model
-		term_list[i] = result.term_removed
-	end
-	return (;formula_list=fm_list, models=model_list, terms_removed=term_list)
-end
-
-# ╔═╡ d94c5a8d-dfd9-4d30-a6fb-85ed599869ce
-function plot_predictions_2d( data::DataFrame, model, xcol::Symbol, ycol::Symbol ;
-     plot_misclassified::Bool = true, threshold::Real=0.5)		
-	label_mask         = data.label .== 1
-	misclassified_mask =  misclassified(model,data, threshold=threshold)
-
-	plt = plot(palette = palette(:RdBu_4))
-	scatter!(plt, data[label_mask,xcol],data[label_mask,ycol],ms=0,mc=:2, label="True Positive")
-	scatter!(plt, data[.!label_mask,xcol],data[.!label_mask,ycol],ms=0,mc=3, label="True Negative")
-	if plot_misclassified
-		scatter!(plt, data[misclassified_mask .& .!label_mask,xcol],data[misclassified_mask .& .! label_mask,ycol],ms=2,mc=4, markerstrokewidth=0, label="False Positive")
-		scatter!(plt, data[misclassified_mask .& label_mask,xcol],data[misclassified_mask .& label_mask,ycol],ms=2,mc=1, markerstrokewidth=0, label="False Negative")
-	end
-	xlabel!(plt,string(xcol))
-	ylabel!(plt,string(ycol))
-
-	return plt
-end
-
-# ╔═╡ 7515d1f5-0490-417e-808b-28b5902580b5
-plot_predictions_2d(data, lrm_2d, lrm_2d_vars[1], lrm_2d_vars[2], threshold=thresh_2d )
-
-# ╔═╡ 09f20d75-cd5e-41e9-a28b-2a6b48d0671f
-function step(df, lhs::Symbol, rhs::AbstractVector{Symbol},
-              forward::Bool, use_aic::Bool)
-    options = forward ? setdiff(names(df), [lhs; rhs]) : rhs
-    fun = use_aic ? aic : bic
-    isempty(options) && return (rhs, false)
-    #best_fun = fun(lm(Term(lhs) ~ sum(term.(rhs)), df))
-	best_fun = fun(glm(Term(lhs) ~ sum(term.(rhs)), df, Binomial(), ProbitLink()))
-    improved = false
-    best_rhs = rhs
-    for opt in options
-        this_rhs = forward ? [rhs; opt] : setdiff(rhs, [opt])
-        #this_fun = fun(lm( Term(lhs) ~ sum(term.(rhs)), df))
-		this_fun = fun(glm( Term(lhs) ~ sum(term.(rhs)), df, Binomial(), ProbitLink()))
-        if this_fun < best_fun
-            best_fun = this_fun
-            best_rhs = this_rhs
-            improved = true
-        end
-    end
-    (best_rhs, improved)
-end
-
-# ╔═╡ b43f620f-d4fb-4ab1-9f39-dc939271c9cd
-#scatter(0:(length(models)-1),map(m->accuracy(m, data), models), legend=:none)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1884,6 +1793,7 @@ version = "0.9.1+5"
 # ╠═601bfbd5-9f85-4fb3-a75b-9953ef6e9d8d
 # ╟─192469ed-a067-4fc2-a997-36b68afadb1e
 # ╠═177df112-4b58-488e-868e-19fea591e3cb
+# ╟─aec4b19f-dea6-4534-b23a-88ea4f8c240f
 # ╟─d4b671b8-f9ed-4f02-a00f-23f59b4f7883
 # ╟─81cce0d1-6a09-4a5a-8934-db9cf33f8a98
 # ╠═b4ac8465-a1ea-4faf-8f1e-4ba803efe8fe
@@ -1948,22 +1858,16 @@ version = "0.9.1+5"
 # ╟─b654b8b5-fbcc-4119-ae6c-13ccd55398fb
 # ╠═cd331dad-7fe9-4f1e-94db-3d103bc7a350
 # ╟─194c07d8-5d78-4051-a647-090c94de7fb4
-# ╠═dc28f942-9ba8-45ee-badb-84326b077d62
-# ╠═1a6460f9-d7df-42dd-95ca-527233bf2f67
-# ╠═ad86f7c4-cce8-446c-bed1-eae4800f1bda
+# ╟─dc28f942-9ba8-45ee-badb-84326b077d62
+# ╟─1a6460f9-d7df-42dd-95ca-527233bf2f67
+# ╟─ad86f7c4-cce8-446c-bed1-eae4800f1bda
 # ╠═c9a2eb7f-5189-4aab-bcb7-6b3e7f50689c
 # ╠═a6338962-ef11-479d-8e3c-1975703b1058
 # ╠═5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
-# ╠═c429f200-24c0-41b3-8660-a0ebff7cd5a9
+# ╟─c429f200-24c0-41b3-8660-a0ebff7cd5a9
 # ╟─0f391345-5b71-45a7-b826-bc98c1feef9c
 # ╠═6cdc71be-cbc7-11ec-3c09-afe22a13530f
-# ╠═475c352a-5f0d-40c8-ad74-4a4c81e8d5e1
-# ╟─d84e3b2b-2635-4175-a963-2ab49e17d05a
-# ╠═4393033f-54c5-42e1-b4cf-f16da0d6729d
-# ╠═fc78e16c-c2ad-4a24-afaf-500c0c25e3d8
-# ╠═fd316ce4-4aa3-47ac-8915-a86bd99c5c44
-# ╠═d94c5a8d-dfd9-4d30-a6fb-85ed599869ce
-# ╠═09f20d75-cd5e-41e9-a28b-2a6b48d0671f
-# ╠═b43f620f-d4fb-4ab1-9f39-dc939271c9cd
+# ╠═663e62c3-480c-4bc3-a11b-f887754f5a5a
+# ╟─475c352a-5f0d-40c8-ad74-4a4c81e8d5e1
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
