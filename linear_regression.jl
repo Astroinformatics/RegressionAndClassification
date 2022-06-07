@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.5
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -326,13 +326,13 @@ md"""
 
 # ╔═╡ c54763c1-d104-443c-895f-5729ea416ab0
 md"""
-Having trouble? Click here to skip ahead: $(@bind skip_loss_function CheckBox())
+Don't feel like writing the code yourself? Click here to skip ahead: $(@bind skip_loss_function CheckBox())
 """
 
 # ╔═╡ cea9a7b8-e7d2-46e1-92d3-1dce48012693
 md"""
 ## Finding the minima
-The loss function chosen above, ``J(x;\, \theta_0,\, \theta_1)`` is differentiable.  This means that we could iteratively optimize the parameters using the gradient descent algorithm. If you would like a quick introduction to gradient descent (or to refresh your intuition behind the idea), then take a break to visit the [lab on Gradient Descent](./open?path=./gradient-descent.jl).
+The loss function chosen above, ``J(x;\, \theta_0,\, \theta_1)`` is differentiable.  This means that we could iteratively optimize the parameters using the gradient descent algorithm. If you would like a quick introduction to gradient descent (or to refresh your intuition behind the idea), then take a break to visit the [lab on Optimization using Gradient Descent](https://github.com/Astroinformatics/Optimization) from "day 0".
 
 It is important to recognize that we are optimizing ``J`` with respect to the parameters ``\theta`` (rather than ``x``).  We can compute the partial derivatives analytically as
 ```math
@@ -462,8 +462,9 @@ In the next section, we'll explore what happens when the assumptions are violate
 
 # ╔═╡ c24ae519-cdd6-4544-943e-ee6018da0810
 md"""
-# Next Steps (optional)
-## Measurement Uncertainties & Weighted Linear Regression
+# Incorporating Measurement Uncertainties
+
+## Weighted Linear Regression
 Often in astronomy & astrophysics, we have access to the measurement uncertainties (or at least estimate of the measurement uncertainties).  
 Usually, these are not equal, violating one of the assumptions of ordinary least squares.  
 If the measurement errors are all independent and uncorrelated, then we can use [weighted linear regression](https://en.wikipedia.org/wiki/Weighted_least_squares).  
@@ -506,7 +507,7 @@ Thankfully, it's a simple upgrade and we can still perform weighted linear regre
 
 # ╔═╡ 75311f29-da64-44fe-9623-5e92da348f13
 md"""
-## Correlated Measurement Noise & General Linear Regression
+## Correlated Measurement Noise & General Linear Regression (optional)
 If the measurement uncertainties are correlated, then we often model the errors as a multivariate normal distribution.
 ```math
 \mathbf{\epsilon} \sim N(\mathbf{0}, \mathbf{\Sigma}),
@@ -525,7 +526,7 @@ As the size of the system increases, the memory and computational costs rapidly 
 
 # ╔═╡ 03157430-e8a8-4daf-9689-802ccd1195f8
 md"""
-## General Linear Regression & Non-linear Models
+## General Linear Regression & Non-linear Models (optional)
 Often in astronomy & astrophysics we need to work with models that are non-linear (at least as originally written).  However, in some cases, we can perform a change of variables that allows us to rewrite the problem as a form of linear regression on the transformed variable.  
 
 One example would be replacing fluxes with log fluxes (or magnitudes) to fit a [log-linear model](https://en.wikipedia.org/wiki/Log-linear_model).  Sometimes this requires making some sacrifices (e.g., the measurement uncertainties probably aren't normally distributed in the log flux).  
@@ -546,6 +547,17 @@ This is the basis for the Lomb-Scargle periodogram (and many other periodograms)
 In both of the examples above the careful choice of regressors (or *features* in the machine learning parlance), the problem can be reframed as a problem of linear regression (or many linear regression problems).  In addition to accelerating the fitting process, rewriting a linear models in terms of linear regression can be very beneficial since the resulting models have a single global mode, are readily interpretable and are computationally efficient.  
 In the next lab, we'll consider logistic regression, one example of a family of *generalized linear models* which makes use of a link function to help with classification problems.
 	"""
+
+# ╔═╡ 422aa4a5-5642-4e64-a20f-ec1727efcafc
+md"""
+## Generalized Linear Regression in the astronomical literature
+
+Linear regression (and the numerous variants) are very common in the astronomical literature.  For some examples of general linear regression being applied to astronomical problems and comparisons how other more "advanced" methods performed on the same data, see:
+- [Elliott et al. (2016)](https://ui.adsabs.harvard.edu/abs/2016ASSP...42...91E/abstract)
+- [Rafieferantsoa et al. (2018)](https://ui.adsabs.harvard.edu/abs/2018MNRAS.479.4509R/abstract)
+- [de Beurs et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020arXiv201100003D/abstract)
+
+"""
 
 # ╔═╡ dbbea6dd-2f02-420c-9ee6-9dc5bd9ebb30
 md"# Setup & Helper Code"
@@ -2074,6 +2086,7 @@ version = "0.9.1+5"
 # ╟─df992e3a-8d0c-44d7-824a-2a1d3f022f06
 # ╟─75311f29-da64-44fe-9623-5e92da348f13
 # ╟─03157430-e8a8-4daf-9689-802ccd1195f8
+# ╟─422aa4a5-5642-4e64-a20f-ec1727efcafc
 # ╟─dbbea6dd-2f02-420c-9ee6-9dc5bd9ebb30
 # ╠═356000c0-882e-11ec-0fd0-1932daca92e7
 # ╠═8806e08e-0af8-48dc-a580-314a6a0cf917
