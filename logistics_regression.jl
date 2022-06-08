@@ -370,6 +370,25 @@ accuracy(model, data::DataFrame; threshold::Real = 0.5) = sum( classify(model, t
 # ╔═╡ a6338962-ef11-479d-8e3c-1975703b1058
 misclassified(model, data::DataFrame; threshold::Real=0.5) = classify(model, threshold=threshold) .!= data.label
 
+# ╔═╡ 29f1f1a6-a542-4792-8825-cd37aee7b7d7
+function plot_predictions_2d( data::DataFrame, model, xcol::Symbol, ycol::Symbol ;
+     plot_misclassified::Bool = true, threshold::Real=0.5)		
+	label_mask         = data.label .== 1
+	misclassified_mask =  misclassified(model,data, threshold=threshold)
+
+	plt = plot(palette = palette(:RdBu_4))
+	scatter!(plt, data[label_mask,xcol],data[label_mask,ycol],ms=0,mc=:2, label="True Positive")
+	scatter!(plt, data[.!label_mask,xcol],data[.!label_mask,ycol],ms=0,mc=3, label="True Negative")
+	if plot_misclassified
+		scatter!(plt, data[misclassified_mask .& .!label_mask,xcol],data[misclassified_mask .& .! label_mask,ycol],ms=2,mc=4, markerstrokewidth=0, label="False Positive")
+		scatter!(plt, data[misclassified_mask .& label_mask,xcol],data[misclassified_mask .& label_mask,ycol],ms=2,mc=1, markerstrokewidth=0, label="False Negative")
+	end
+	xlabel!(plt,string(xcol))
+	ylabel!(plt,string(ycol))
+
+	return plt
+end
+
 # ╔═╡ 5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
 function calc_classification_diagnostics(model, data; threshold = 0.5)
 	pred = classify(model; threshold=threshold)
@@ -1861,6 +1880,7 @@ version = "0.9.1+5"
 # ╟─dc28f942-9ba8-45ee-badb-84326b077d62
 # ╟─1a6460f9-d7df-42dd-95ca-527233bf2f67
 # ╟─ad86f7c4-cce8-446c-bed1-eae4800f1bda
+# ╟─29f1f1a6-a542-4792-8825-cd37aee7b7d7
 # ╠═c9a2eb7f-5189-4aab-bcb7-6b3e7f50689c
 # ╠═a6338962-ef11-479d-8e3c-1975703b1058
 # ╠═5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
