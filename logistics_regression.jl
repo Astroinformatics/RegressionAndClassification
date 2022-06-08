@@ -339,7 +339,12 @@ md"""
 """
 
 # ╔═╡ cd331dad-7fe9-4f1e-94db-3d103bc7a350
-
+md"""
+## Next steps
+If you're interested in seeing how logistic regression has been applied the astronomical literature, some recent examples are:
+- [Rowlinson et al. (2019)](https://ui.adsabs.harvard.edu/abs/2019A%26C....27..111R/abstract)
+- [Cheng et al. (2020)](https://ui.adsabs.harvard.edu/abs/2020MNRAS.493.4209C/abstract)
+"""
 
 # ╔═╡ 194c07d8-5d78-4051-a647-090c94de7fb4
 md"""
@@ -1875,7 +1880,7 @@ version = "0.9.1+5"
 # ╟─32c9945d-a30e-4a95-9065-e867c59ebf06
 # ╠═4f2df587-aba9-42e3-b4d0-bf6ef218c0ae
 # ╟─b654b8b5-fbcc-4119-ae6c-13ccd55398fb
-# ╠═cd331dad-7fe9-4f1e-94db-3d103bc7a350
+# ╟─cd331dad-7fe9-4f1e-94db-3d103bc7a350
 # ╟─194c07d8-5d78-4051-a647-090c94de7fb4
 # ╟─dc28f942-9ba8-45ee-badb-84326b077d62
 # ╟─1a6460f9-d7df-42dd-95ca-527233bf2f67
