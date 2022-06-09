@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.6
 
 using Markdown
 using InteractiveUtils
@@ -475,7 +475,7 @@ end
 
 # ╔═╡ fef9e716-e7f5-48c0-a82e-1a950b8bf893
 begin
-	data_filename = "training_set.csv"
+	data_filename = "quasar2.csv"
 	url = "https://scholarsphere.psu.edu/resources/edc61b33-550d-471d-8e86-1ff5cc8d8f4d/downloads/19732"
 	data_path = find_or_download_data(data_filename,url)
 end
@@ -1886,9 +1886,9 @@ version = "0.9.1+5"
 # ╟─1a6460f9-d7df-42dd-95ca-527233bf2f67
 # ╟─ad86f7c4-cce8-446c-bed1-eae4800f1bda
 # ╟─29f1f1a6-a542-4792-8825-cd37aee7b7d7
-# ╠═c9a2eb7f-5189-4aab-bcb7-6b3e7f50689c
-# ╠═a6338962-ef11-479d-8e3c-1975703b1058
-# ╠═5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
+# ╟─c9a2eb7f-5189-4aab-bcb7-6b3e7f50689c
+# ╟─a6338962-ef11-479d-8e3c-1975703b1058
+# ╟─5e97c7fe-38c1-4a4c-a3f0-f985f981b8aa
 # ╟─c429f200-24c0-41b3-8660-a0ebff7cd5a9
 # ╟─0f391345-5b71-45a7-b826-bc98c1feef9c
 # ╠═6cdc71be-cbc7-11ec-3c09-afe22a13530f
